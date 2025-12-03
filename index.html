@@ -978,9 +978,9 @@
           />
           <div class="ci-admin-titleblock">
             <div class="ci-admin-kicker">Cook International Casino</div>
-            <div class="ci-admin-title">Admin Portal & House Dashboard</div>
+            <div class="ci-admin-title">Admin Portal &amp; House Dashboard</div>
             <div class="ci-admin-subtitle">
-              Players, ledgers, cashouts, risk & VIP — full back office in one place.
+              Players, ledgers, cashouts, risk &amp; VIP — full back office in one place.
             </div>
           </div>
         </div>
@@ -1063,9 +1063,18 @@
             <button type="button" class="ci-admin-tab" data-tab="gameLedger">
               <span>LEDGER</span><strong>Game Rounds</strong>
             </button>
+
+            <!-- Your requested order: Admin Log, Reports, Cashouts -->
+            <button type="button" class="ci-admin-tab" data-tab="adminLog">
+              <span>ADMIN</span><strong>Log</strong>
+            </button>
+            <button type="button" class="ci-admin-tab" data-tab="reports">
+              <span>REPORTS</span><strong>KPIs</strong>
+            </button>
             <button type="button" class="ci-admin-tab" data-tab="cashouts">
               <span>CASHOUTS</span><strong>Requests</strong>
             </button>
+
             <button type="button" class="ci-admin-tab" data-tab="stripe">
               <span>STRIPE</span><strong>Ledger</strong>
             </button>
@@ -1074,12 +1083,6 @@
             </button>
             <button type="button" class="ci-admin-tab" data-tab="blacklist">
               <span>RISK</span><strong>Blacklist</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="reports">
-              <span>REPORTS</span><strong>KPIs</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="adminLog">
-              <span>ADMIN</span><strong>Log</strong>
             </button>
           </nav>
 
@@ -1187,7 +1190,7 @@
                 <div class="ci-panel-header-left">
                   <h2>Players</h2>
                   <div class="ci-panel-subtitle">
-                    Player accounts, balances, KYC, risk, VIP & self-exclusion.
+                    Player accounts, balances, KYC, risk, VIP &amp; self-exclusion.
                   </div>
                 </div>
                 <div class="ci-panel-header-right">
@@ -1260,7 +1263,7 @@
 
                 <aside class="ci-split-side" id="ci-players-detail">
                   <div class="ci-side-title">
-                    <h3>Player Details & Adjustments</h3>
+                    <h3>Player Details &amp; Adjustments</h3>
                     <span class="ci-pill" id="ci-players-detail-pill">No player selected</span>
                   </div>
 
@@ -1853,7 +1856,6 @@
   <script>
     "use strict";
 
-    /* BLOCK 2 & 3 JAVASCRIPT CONTINUE HERE */
     // Web App URL (your current deployment)
     const CI_BACKEND_URL =
       "https://script.google.com/macros/s/AKfycbz9BHWf--bWlPBu4UKB-liNGAvXmndiXdliNq99tbWCoee_Qzqlo3D8yZas0AVVuPOADw/exec";
@@ -1938,14 +1940,13 @@
       return s.slice(0, maxLength - 1) + "…";
     }
 
- // Fetch helpers
+    // Fetch helpers
     async function postJson(url, payload) {
-      // We removed the header so the browser sends it immediately without asking permission
       const res = await fetch(url, {
         method: "POST",
-        body: JSON.stringify(payload || {}), 
+        body: JSON.stringify(payload || {}),
       });
-      
+
       const text = await res.text();
       try {
         return JSON.parse(text);
@@ -1989,6 +1990,73 @@
 
       const url = CI_BACKEND_URL + "?" + usp.toString();
       return getJson(url);
+    }
+
+    // Helper: load Players from the Players sheet via getSheet
+    async function fetchPlayersFromSheet(maxRows) {
+      if (!ciState.apiKey) {
+        throw new Error("Admin API key missing");
+      }
+
+      const res = await adminGet("getSheet", {
+        sheetName: "Players",
+        maxRows: maxRows || 2000,
+      });
+
+      if (!res || !res.ok) {
+        throw new Error((res && res.error) || "Failed to load Players sheet");
+      }
+
+      const headers = res.headers || [];
+      const rows = res.rows || [];
+
+      const idxPlayerId = headers.indexOf("Player ID");
+      const idxUsername = headers.indexOf("Username");
+      const idxFullName = headers.indexOf("Full Name");
+      const idxEmail = headers.indexOf("Email");
+      const idxBalance = headers.indexOf("Current Balance");
+      const idxKycStatus = headers.indexOf("KYC Status");
+      const idxRiskStatus = headers.indexOf("Risk Status");
+      const idxVipLevel = headers.indexOf("VIP Level");
+      const idxFlagNotes = headers.indexOf("Flag Notes");
+
+      let idxSelfUntil = headers.indexOf("Self Excluded Until");
+      if (idxSelfUntil < 0) {
+        idxSelfUntil = headers.indexOf("Self-Excluded Until");
+      }
+      const idxSelfReason = headers.indexOf("Self Exclusion Reason");
+      const idxSelfActive = headers.indexOf("Self Exclusion Active");
+
+      const players = rows
+        .map(function (row) {
+          const player = {
+            playerId: idxPlayerId >= 0 ? row[idxPlayerId] : "",
+            username: idxUsername >= 0 ? row[idxUsername] : "",
+            fullName: idxFullName >= 0 ? row[idxFullName] : "",
+            email: idxEmail >= 0 ? row[idxEmail] : "",
+            balance:
+              idxBalance >= 0 && row[idxBalance] != null && row[idxBalance] !== ""
+                ? Number(row[idxBalance]) || 0
+                : 0,
+            kycStatus: idxKycStatus >= 0 ? row[idxKycStatus] : "",
+            riskStatus: idxRiskStatus >= 0 ? row[idxRiskStatus] : "",
+            vipLevel: idxVipLevel >= 0 ? row[idxVipLevel] : "",
+            flagNotes: idxFlagNotes >= 0 ? row[idxFlagNotes] : "",
+            selfExcludedUntil: idxSelfUntil >= 0 ? row[idxSelfUntil] : "",
+            selfExclusionReason: idxSelfReason >= 0 ? row[idxSelfReason] : "",
+            selfExclusionActive: idxSelfActive >= 0 ? row[idxSelfActive] : "",
+          };
+
+          if (!player.playerId && !player.username && !player.email) {
+            return null;
+          }
+          return player;
+        })
+        .filter(function (p) {
+          return !!p;
+        });
+
+      return players;
     }
 
     // Login
@@ -2074,7 +2142,6 @@
         panel.classList.toggle("ci-admin-panel-active", active);
       });
 
-      // Lazy-load panel data on first activation
       if (!ciState.hasLoaded[panelName]) {
         ciState.hasLoaded[panelName] = true;
         if (panelName === "players") {
@@ -2101,35 +2168,43 @@
       }
     }
 
-    // DASHBOARD
+    // DASHBOARD (now uses getSheet for Players + Cashouts)
     async function loadDashboard() {
       if (!ciState.apiKey) return;
+
       setLoading(true, "Refreshing dashboard…");
       setStatus("Refreshing dashboard metrics…", false);
 
       try {
-        // 1) Players for totals / VIP snapshot
-        const playersRes = await adminGet("listPlayers", {});
-        const players = (playersRes && playersRes.players) || [];
+        // Players from Players sheet
+        const players = await fetchPlayersFromSheet(2000);
         const totalPlayers = players.length;
+
         let totalBalance = 0;
         const vipCounts = {};
         const topPlayers = [];
+        let highRiskCount = 0;
 
         players.forEach(function (p) {
           const balance = Number(p.balance || 0);
-          if (!isNaN(balance)) totalBalance += balance;
+          if (!isNaN(balance)) {
+            totalBalance += balance;
+            if (balance > 0) {
+              topPlayers.push({
+                playerId: p.playerId || "",
+                username: p.username || "",
+                vipLevel: p.vipLevel || "",
+                balance: balance,
+              });
+            }
+          }
 
           const vip = (p.vipLevel || "").toString() || "None";
           vipCounts[vip] = (vipCounts[vip] || 0) + 1;
 
-          if (balance > 0) {
-            topPlayers.push({
-              playerId: p.playerId || "",
-              username: p.username || "",
-              vipLevel: p.vipLevel || "",
-              balance: balance,
-            });
+          const risk = (p.riskStatus || "").toString().toLowerCase();
+          if (risk === "high") {
+            highRiskCount++;
           }
         });
 
@@ -2137,12 +2212,21 @@
           return b.balance - a.balance;
         });
 
-        // 2) Cashout requests (recent)
-        const cashoutRes = await adminGet("cashoutRequests", {
-          maxRows: 50,
+        // Cashouts from Cashouts sheet
+        const cashRes = await adminGet("getSheet", {
+          sheetName: "Cashouts",
+          maxRows: 200,
         });
-        const cashRows = (cashoutRes && cashoutRes.rows) || [];
-        const cashHeaders = (cashoutRes && cashoutRes.headers) || [];
+
+        if (!cashRes || !cashRes.ok) {
+          throw new Error(
+            (cashRes && cashRes.error) || "Failed to load Cashouts sheet"
+          );
+        }
+
+        const cashHeaders = cashRes.headers || [];
+        const cashRows = cashRes.rows || [];
+
         const idxTs = cashHeaders.indexOf("Timestamp");
         const idxPid = cashHeaders.indexOf("Player ID");
         const idxUser = cashHeaders.indexOf("Username");
@@ -2150,36 +2234,14 @@
         const idxReq = cashHeaders.indexOf("Requested Chips");
         const idxMethod = cashHeaders.indexOf("Payout Method");
 
-        // 3) High-risk count via Players sheet through Reports or approximate
-        // We’ll approximate by calling Reports refresh only when needed.
-        let highRiskCount = 0;
-        try {
-          const reportsRes = await adminGet("getSheet", {
-            sheetName: "Players",
-            maxRows: 2000,
-          });
-          const rHeaders = (reportsRes && reportsRes.headers) || [];
-          const rRows = (reportsRes && reportsRes.rows) || [];
-          const riskIdx = rHeaders.indexOf("Risk Status");
-          if (riskIdx >= 0) {
-            rRows.forEach(function (row) {
-              const risk = (row[riskIdx] || "").toString().toLowerCase();
-              if (risk === "high") highRiskCount++;
-            });
-          }
-        } catch (e) {
-          // If Players sheet direct read fails, ignore.
-        }
-
-        // Fill KPI cards
+        // KPI cards
         const elTotalPlayers = qs("#ci-kpi-total-players");
         const elTotalBalance = qs("#ci-kpi-total-balance");
         const elOpenCashouts = qs("#ci-kpi-open-cashouts");
         const elHighRisk = qs("#ci-kpi-high-risk");
 
         if (elTotalPlayers) elTotalPlayers.textContent = formatNumber(totalPlayers);
-        if (elTotalBalance)
-          elTotalBalance.textContent = formatChips(totalBalance);
+        if (elTotalBalance) elTotalBalance.textContent = formatChips(totalBalance);
         if (elHighRisk) elHighRisk.textContent = formatNumber(highRiskCount);
 
         const openCashouts = cashRows.length;
@@ -2198,7 +2260,8 @@
             vipKeys.sort();
             vipKeys.forEach(function (vip) {
               const li = document.createElement("li");
-              li.textContent = vip + ": " + formatNumber(vipCounts[vip]) + " players";
+              li.textContent =
+                vip + ": " + formatNumber(vipCounts[vip]) + " players";
               vipList.appendChild(li);
             });
           }
@@ -2275,9 +2338,7 @@
                 (emailVal || "").toString();
 
               const tdTs = document.createElement("td");
-              tdTs.textContent = tsVal
-                ? new Date(tsVal).toLocaleString()
-                : "—";
+              tdTs.textContent = tsVal ? new Date(tsVal).toLocaleString() : "—";
 
               const tdPlayer = document.createElement("td");
               tdPlayer.textContent = trimString(playerLabel, 28);
@@ -2399,7 +2460,6 @@
         grid.headers = res.headers || [];
         grid.rows = res.rows || [];
 
-        // Default sort by first column (usually Timestamp)
         grid.sortIndex = 0;
         grid.sortDir = "desc";
         grid.page = 1;
@@ -2450,7 +2510,6 @@
 
       grid.filteredIndexes = indexes;
 
-      // Clamp page if necessary
       const totalPages = Math.max(
         1,
         Math.ceil(indexes.length / grid.pageSize || 1)
@@ -2458,7 +2517,6 @@
       if (grid.page > totalPages) grid.page = totalPages;
       if (grid.page < 1) grid.page = 1;
 
-      // Sorting
       const si = grid.sortIndex;
       const dir = grid.sortDir === "asc" ? 1 : -1;
       grid.filteredIndexes.sort(function (aIdx, bIdx) {
@@ -2501,7 +2559,6 @@
       const rows = grid.rows || [];
       const indexes = grid.filteredIndexes || [];
 
-      // Render header row (with sort indicators)
       headRow.innerHTML = "";
       headers.forEach(function (header, idx) {
         const th = document.createElement("th");
@@ -2519,7 +2576,6 @@
         headRow.appendChild(th);
       });
 
-      // Pagination slice
       const pageSize = grid.pageSize;
       const totalRows = indexes.length;
       const totalPages = Math.max(
@@ -2576,7 +2632,6 @@
       const headRow = th.parentElement;
       if (!headRow) return;
 
-      // Determine which grid this header belongs to
       const gridNames = [
         "log",
         "gameLedger",
@@ -2614,12 +2669,10 @@
     }
 
     function attachGridDomHandlers() {
-      // Sort handlers
       qsa("tr[data-grid-head]").forEach(function (headRow) {
         headRow.addEventListener("click", handleGridSortClick);
       });
 
-      // Search
       qsa("[data-grid-search]").forEach(function (input) {
         const gridName = input.getAttribute("data-grid-search");
         input.addEventListener("input", function () {
@@ -2630,7 +2683,6 @@
         });
       });
 
-      // Show All
       qsa("[data-grid-show-all]").forEach(function (btn) {
         const gridName = btn.getAttribute("data-grid-show-all");
         btn.addEventListener("click", function () {
@@ -2643,7 +2695,6 @@
         });
       });
 
-      // Page size
       qsa("[data-grid-page-size]").forEach(function (sel) {
         const gridName = sel.getAttribute("data-grid-page-size");
         sel.addEventListener("change", function () {
@@ -2658,7 +2709,6 @@
         });
       });
 
-      // Prev/Next
       qsa("[data-grid-prev]").forEach(function (btn) {
         const gridName = btn.getAttribute("data-grid-prev");
         btn.addEventListener("click", function () {
@@ -2684,7 +2734,6 @@
         });
       });
 
-      // Refresh buttons on grids
       qsa("[data-grid-refresh]").forEach(function (btn) {
         const gridName = btn.getAttribute("data-grid-refresh");
         btn.addEventListener("click", function () {
@@ -2693,16 +2742,13 @@
         });
       });
 
-      // Print buttons
       qsa("[data-grid-print]").forEach(function (btn) {
         const target = btn.getAttribute("data-grid-print");
         btn.addEventListener("click", function () {
-          // We rely on print CSS to only show active panel
           window.print();
         });
       });
 
-      // Dashboard print
       const dashboardPrintBtn = qsa('[data-grid-print="dashboard"]')[0];
       if (dashboardPrintBtn) {
         dashboardPrintBtn.addEventListener("click", function () {
@@ -2710,6 +2756,7 @@
         });
       }
     }
+
     // PLAYERS TAB — search, sort, pagination, KYC, comp/adjust, manual cashout
     function initPlayersDomHandlers() {
       const searchInput = qs("#ci-players-search");
@@ -2810,14 +2857,15 @@
       }
     }
 
+    // loadPlayers now uses fetchPlayersFromSheet (no more listPlayers action)
     async function loadPlayers() {
       if (!ciState.apiKey) return;
       setLoading(true, "Loading Players…");
       setStatus("Loading Players sheet via Admin API…", false);
 
       try {
-        const res = await adminGet("listPlayers", {});
-        const players = (res && res.players) || [];
+        const players = await fetchPlayersFromSheet(2000);
+
         ciState.players.list = players;
         ciState.players.page = 1;
         ciState.players.sortKey = "username";
@@ -2898,7 +2946,6 @@
         }
       });
 
-      // Sort
       const sortKey = ciState.players.sortKey;
       const dir = ciState.players.sortDir === "asc" ? 1 : -1;
 
@@ -2921,7 +2968,6 @@
 
       ciState.players.filtered = filtered;
 
-      // Pagination
       const pageSize = ciState.players.pageSize;
       const total = filtered.length;
       const totalPages = Math.max(
@@ -3003,7 +3049,6 @@
         formatNumber(total) +
         " players";
 
-      // Clear selected highlight when re-rendering
       qsa("#ci-players-tbody tr").forEach(function (row) {
         row.classList.remove("ci-table-row-selected");
       });
@@ -3198,7 +3243,6 @@
         pill.textContent = trimString(label, 26);
       }
 
-      // Attach handlers inside detail card
       const saveFlagsBtn = qs("#ci-player-save-flags-btn");
       if (saveFlagsBtn) {
         saveFlagsBtn.addEventListener("click", function () {
@@ -3291,8 +3335,6 @@
         return;
       }
 
-      // We send a generic event into the existing front-end pipeline,
-      // which should call applyChipDeltaToPlayer_ and handleEventAndEmails.
       const payload = {
         eventType: isManualCashout ? "cashout_request" : "credit",
         playerId: player.playerId || "",
@@ -3338,7 +3380,6 @@
           false
         );
 
-        // Reload players so balance snapshots reflect the change
         await loadPlayers();
       } catch (err) {
         setStatus(
@@ -3378,13 +3419,11 @@
 
     // INIT
     function initAdminPortal() {
-      // Label web app
       const label = qs("#ci-admin-webapp-label");
       if (label) {
         label.textContent = "Configured";
       }
 
-      // Login form
       const loginForm = qs("#ci-admin-login-form");
       const loginReset = qs("#ci-admin-login-reset");
       if (loginForm) {
@@ -3394,7 +3433,6 @@
         loginReset.addEventListener("click", resetLoginForm);
       }
 
-      // Tabs
       qsa(".ci-admin-tab").forEach(function (btn) {
         btn.addEventListener("click", function () {
           const name = btn.getAttribute("data-tab");
@@ -3403,14 +3441,10 @@
         });
       });
 
-      // Grids
       initSheetGrids();
       attachGridDomHandlers();
-
-      // Players
       initPlayersDomHandlers();
 
-      // Dashboard refresh
       const dashboardRefreshBtn = qs("#ci-dashboard-refresh-btn");
       if (dashboardRefreshBtn) {
         dashboardRefreshBtn.addEventListener("click", function () {
@@ -3418,7 +3452,6 @@
         });
       }
 
-      // Reports rebuild
       const reportsRefreshBtn = qs("#ci-reports-refresh-btn");
       if (reportsRefreshBtn) {
         reportsRefreshBtn.addEventListener("click", function () {
