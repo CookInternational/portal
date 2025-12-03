@@ -1938,19 +1938,19 @@
       return s.slice(0, maxLength - 1) + "…";
     }
 
-    // Fetch helpers
+ // Fetch helpers
     async function postJson(url, payload) {
+      // We removed the header so the browser sends it immediately without asking permission
       const res = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload || {}),
+        body: JSON.stringify(payload || {}), 
       });
+      
       const text = await res.text();
       try {
         return JSON.parse(text);
       } catch (e) {
+        console.error("Backend Error:", text);
         throw new Error("Invalid JSON from backend");
       }
     }
