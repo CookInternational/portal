@@ -995,6 +995,7 @@
           <span id="ci-admin-status-text">Enter your admin credentials to unlock the portal.</span>
         </div>
 
+        <!-- LOGIN VIEW -->
         <section id="ci-admin-login-view">
           <div class="ci-card">
             <h2>Admin Login</h2>
@@ -1043,7 +1044,9 @@
           </div>
         </section>
 
+        <!-- APP VIEW -->
         <section id="ci-admin-app-view">
+          <!-- Tabs -->
           <nav class="ci-admin-tabs" aria-label="Admin sections">
             <button type="button" class="ci-admin-tab" data-tab="dashboard">
               <span>DASHBOARD</span><strong>Overview</strong>
@@ -1058,17 +1061,13 @@
               <span>LEDGER</span><strong>Game Rounds</strong>
             </button>
 
+            <!-- Your requested order: Admin Log, Reports, Cashouts -->
             <button type="button" class="ci-admin-tab" data-tab="adminLog">
               <span>ADMIN</span><strong>Log</strong>
             </button>
             <button type="button" class="ci-admin-tab" data-tab="reports">
               <span>REPORTS</span><strong>KPIs</strong>
             </button>
-
-            <button type="button" class="ci-admin-tab" data-tab="rewards">
-              <span>REWARDS</span><strong>Redemptions</strong>
-            </button>
-
             <button type="button" class="ci-admin-tab" data-tab="cashouts">
               <span>CASHOUTS</span><strong>Requests</strong>
             </button>
@@ -1084,7 +1083,9 @@
             </button>
           </nav>
 
+          <!-- Panels -->
           <div class="ci-admin-panels">
+            <!-- DASHBOARD PANEL -->
             <section class="ci-admin-panel" data-panel="dashboard">
               <div class="ci-panel-header">
                 <div class="ci-panel-header-left">
@@ -1180,6 +1181,7 @@
               </div>
             </section>
 
+            <!-- PLAYERS PANEL -->
             <section class="ci-admin-panel" data-panel="players" id="ci-panel-players">
               <div class="ci-panel-header">
                 <div class="ci-panel-header-left">
@@ -1234,10 +1236,12 @@
                       <table class="ci-table" id="ci-players-table">
                         <thead>
                           <tr id="ci-players-thead-row">
-                            </tr>
+                            <!-- Filled by JS -->
+                          </tr>
                         </thead>
                         <tbody id="ci-players-tbody">
-                          </tbody>
+                          <!-- Filled by JS -->
+                        </tbody>
                       </table>
                     </div>
                     <div class="ci-pagination" id="ci-players-pagination">
@@ -1270,6 +1274,7 @@
               </div>
             </section>
 
+            <!-- LOG PANEL -->
             <section class="ci-admin-panel" data-panel="log">
               <div class="ci-panel-header">
                 <div class="ci-panel-header-left">
@@ -1339,6 +1344,7 @@
               </div>
             </section>
 
+            <!-- GAME LEDGER PANEL -->
             <section class="ci-admin-panel" data-panel="gameLedger">
               <div class="ci-panel-header">
                 <div class="ci-panel-header-left">
@@ -1408,75 +1414,7 @@
               </div>
             </section>
 
-            <section class="ci-admin-panel" data-panel="rewards">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>Rewards / Redemptions</h2>
-                  <div class="ci-panel-subtitle">
-                    Log of physical reward redemptions and shipping details.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" data-grid-refresh="rewards">
-                    Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="rewards">
-                    Print
-                  </button>
-                </div>
-              </div>
-
-              <div class="ci-toolbar">
-                <div class="ci-toolbar-left">
-                  <div class="ci-toolbar-search-wrap">
-                    <span class="ci-toolbar-search-icon"></span>
-                    <input
-                      type="search"
-                      class="ci-input ci-toolbar-search"
-                      placeholder="Search (Player ID, Username, Reward Item...)"
-                      autocomplete="off"
-                      data-grid-search="rewards"
-                    />
-                  </div>
-                  <button type="button" class="ci-btn-ghost" data-grid-show-all="rewards">
-                    Show All
-                  </button>
-                </div>
-                <div class="ci-toolbar-right">
-                  <label>
-                    Page Size
-                    <select class="ci-select" data-grid-page-size="rewards">
-                      <option value="25" selected>25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              <div class="ci-table-wrap">
-                <div class="ci-table-scroll">
-                  <table class="ci-table">
-                    <thead>
-                      <tr data-grid-head="rewards"></tr>
-                    </thead>
-                    <tbody data-grid-body="rewards"></tbody>
-                  </table>
-                </div>
-                <div class="ci-pagination" data-grid-pagination="rewards">
-                  <div>
-                    <button type="button" class="ci-btn-ghost" data-grid-prev="rewards">
-                      ◀ Prev
-                    </button>
-                    <button type="button" class="ci-btn-ghost" data-grid-next="rewards">
-                      Next ▶
-                    </button>
-                  </div>
-                  <div data-grid-page-info="rewards">Page 1 of 1 • 0 rows</div>
-                </div>
-              </div>
-            </section>
-
+            <!-- CASHOUTS PANEL -->
             <section class="ci-admin-panel" data-panel="cashouts">
               <div class="ci-panel-header">
                 <div class="ci-panel-header-left">
@@ -1546,6 +1484,7 @@
               </div>
             </section>
 
+            <!-- STRIPE LEDGER PANEL -->
             <section class="ci-admin-panel" data-panel="stripe">
               <div class="ci-panel-header">
                 <div class="ci-panel-header-left">
@@ -1615,6 +1554,7 @@
               </div>
             </section>
 
+            <!-- PAYPAL LEDGER PANEL -->
             <section class="ci-admin-panel" data-panel="paypal">
               <div class="ci-panel-header">
                 <div class="ci-panel-header-left">
@@ -1684,6 +1624,7 @@
               </div>
             </section>
 
+            <!-- BLACKLIST PANEL -->
             <section class="ci-admin-panel" data-panel="blacklist">
               <div class="ci-panel-header">
                 <div class="ci-panel-header-left">
@@ -1753,6 +1694,7 @@
               </div>
             </section>
 
+            <!-- REPORTS PANEL -->
             <section class="ci-admin-panel" data-panel="reports">
               <div class="ci-panel-header">
                 <div class="ci-panel-header-left">
@@ -1822,6 +1764,7 @@
               </div>
             </section>
 
+            <!-- ADMIN LOG PANEL -->
             <section class="ci-admin-panel" data-panel="adminLog">
               <div class="ci-panel-header">
                 <div class="ci-panel-header-left">
@@ -1910,8 +1853,9 @@
   <script>
     "use strict";
 
-    // IMPORTANT: Replace this with your deployed Web App URL
-    const CI_BACKEND_URL = "https://script.google.com/macros/s/AKfycbz9BHWf--bWlPBu4UKB-liNGAvXmndiXdliNq99tbWCoee_Qzqlo3D8yZas0AVVuPOADw/exec";
+    // Web App URL (your current deployment)
+    const CI_BACKEND_URL =
+      "https://script.google.com/macros/s/AKfycbz9BHWf--bWlPBu4UKB-liNGAvXmndiXdliNq99tbWCoee_Qzqlo3D8yZas0AVVuPOADw/exec";
 
     // Global state
     const ciState = {
@@ -1931,7 +1875,6 @@
         players: false,
         log: false,
         gameLedger: false,
-        rewards: false, // Added Rewards state
         cashouts: false,
         stripe: false,
         paypal: false,
@@ -2204,8 +2147,6 @@
           loadSheetGrid("log", "Log", 500);
         } else if (panelName === "gameLedger") {
           loadSheetGrid("gameLedger", "Game Ledger", 500);
-        } else if (panelName === "rewards") {
-          loadSheetGrid("rewards", "Rewards", 500);
         } else if (panelName === "cashouts") {
           loadSheetGrid("cashouts", "Cashouts", 500);
         } else if (panelName === "stripe") {
@@ -2422,7 +2363,7 @@
       }
     }
 
-    // SHEET GRID HANDLING (Log, Game Ledger, Rewards, Cashouts, Stripe, PayPal, Blacklist, Reports, Admin Log)
+    // SHEET GRID HANDLING (Log, Game Ledger, Cashouts, Stripe, PayPal, Blacklist, Reports, Admin Log)
     function createSheetGrid(name, options) {
       return {
         name: name,
@@ -2440,10 +2381,6 @@
     function initSheetGrids() {
       ciState.grids.log = createSheetGrid("log", { pageSize: 25, maxRows: 500 });
       ciState.grids.gameLedger = createSheetGrid("gameLedger", {
-        pageSize: 25,
-        maxRows: 500,
-      });
-      ciState.grids.rewards = createSheetGrid("rewards", {
         pageSize: 25,
         maxRows: 500,
       });
@@ -2479,8 +2416,6 @@
           return "Log";
         case "gameLedger":
           return "Game Ledger";
-        case "rewards":
-          return "Rewards";
         case "cashouts":
           return "Cashouts";
         case "stripe":
@@ -2697,7 +2632,6 @@
       const gridNames = [
         "log",
         "gameLedger",
-        "rewards",
         "cashouts",
         "stripe",
         "paypal",
