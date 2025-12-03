@@ -53,7 +53,7 @@
         0 0 0 1px rgba(15, 23, 42, 0.8);
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .ci-admin-header {
@@ -114,7 +114,7 @@
       display: flex;
       flex-direction: column;
       padding: 8px 16px 16px;
-      overflow: hidden;
+      overflow: visible;
     }
 
     #ci-admin-login-view,
@@ -448,12 +448,9 @@
       background: rgba(15, 23, 42, 0.96);
       border: 1px solid rgba(30, 64, 175, 0.8);
       padding: 14px 14px 12px;
-      height: 100%;
       min-height: 420px;
-      max-height: calc(100vh - 220px);
-      display: none;
       flex-direction: column;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .ci-admin-panel-active {
@@ -980,7 +977,7 @@
             <div class="ci-admin-kicker">Cook International Casino</div>
             <div class="ci-admin-title">Admin Portal &amp; House Dashboard</div>
             <div class="ci-admin-subtitle">
-              Players, ledgers, cashouts, risk &amp; VIP — full back office in one place.
+              Secure internal portal for Cook International Casino.
             </div>
           </div>
         </div>
@@ -2168,7 +2165,7 @@
       }
     }
 
-    // DASHBOARD (now uses getSheet for Players + Cashouts)
+    // DASHBOARD (uses getSheet for Players + Cashouts)
     async function loadDashboard() {
       if (!ciState.apiKey) return;
 
@@ -2358,7 +2355,7 @@
           }
         }
 
-        setStatus("Dashboard updated from current Sheets data.", false);
+        setStatus("House Dashboard", false);
       } catch (err) {
         setStatus("Dashboard refresh failed: " + String(err.message || err), true);
       } finally {
@@ -2445,7 +2442,7 @@
       const maxRows = maxRowsOverride || grid.maxRows;
 
       setLoading(true, "Loading " + sheetName + "…");
-      setStatus("Loading " + sheetName + " from Sheets…", false);
+      setStatus("Loading " + sheetName + "…", false);
 
       try {
         const res = await adminGet("getSheet", {
@@ -2465,7 +2462,7 @@
         grid.page = 1;
 
         applyGridFilterAndRender(gridName);
-        setStatus(sheetName + " refreshed from current data.", false);
+        setStatus(sheetName + " updated.", false);
       } catch (err) {
         setStatus(
           "Failed to load " + sheetName + ": " + String(err.message || err),
@@ -2857,11 +2854,11 @@
       }
     }
 
-    // loadPlayers now uses fetchPlayersFromSheet (no more listPlayers action)
+    // loadPlayers uses fetchPlayersFromSheet (no listPlayers action)
     async function loadPlayers() {
       if (!ciState.apiKey) return;
       setLoading(true, "Loading Players…");
-      setStatus("Loading Players sheet via Admin API…", false);
+      setStatus("Loading Players…", false);
 
       try {
         const players = await fetchPlayersFromSheet(2000);
@@ -3397,8 +3394,8 @@
     }
 
     async function rebuildAndLoadReports() {
-      setLoading(true, "Rebuilding Reports sheet…");
-      setStatus("Rebuilding Reports sheet and reloading…", false);
+      setLoading(true, "Updating Reports…");
+      setStatus("Updating Reports and reloading…", false);
 
       try {
         const res = await adminGet("refreshReports", {});
@@ -3406,7 +3403,7 @@
           throw new Error((res && res.error) || "Unknown error");
         }
         await loadReports();
-        setStatus("Reports sheet rebuilt and refreshed.", false);
+        setStatus("Reports updated.", false);
       } catch (err) {
         setStatus(
           "Failed to rebuild Reports: " + String(err.message || err),
