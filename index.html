@@ -1061,25 +1061,27 @@
               <span>LEDGER</span><strong>Game Rounds</strong>
             </button>
 
-            <!-- Your requested order: Admin Log, Reports, Cashouts -->
+            <!-- Back office tabs, in requested order -->
             <button type="button" class="ci-admin-tab" data-tab="adminLog">
               <span>ADMIN</span><strong>Log</strong>
             </button>
-            <button type="button" class="ci-admin-tab" data-tab="reports">
-              <span>REPORTS</span><strong>KPIs</strong>
+            <button type="button" class="ci-admin-tab" data-tab="rewards">
+              <span>REWARDS</span><strong>Ledger</strong>
             </button>
             <button type="button" class="ci-admin-tab" data-tab="cashouts">
               <span>CASHOUTS</span><strong>Requests</strong>
             </button>
-
+            <button type="button" class="ci-admin-tab" data-tab="reports">
+              <span>REPORTS</span><strong>KPIs</strong>
+            </button>
+            <button type="button" class="ci-admin-tab" data-tab="blacklist">
+              <span>RISK</span><strong>Blacklist</strong>
+            </button>
             <button type="button" class="ci-admin-tab" data-tab="stripe">
               <span>STRIPE</span><strong>Ledger</strong>
             </button>
             <button type="button" class="ci-admin-tab" data-tab="paypal">
               <span>PAYPAL</span><strong>Ledger</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="blacklist">
-              <span>RISK</span><strong>Blacklist</strong>
             </button>
           </nav>
 
@@ -1273,7 +1275,6 @@
                 </aside>
               </div>
             </section>
-
             <!-- LOG PANEL -->
             <section class="ci-admin-panel" data-panel="log">
               <div class="ci-panel-header">
@@ -1410,6 +1411,76 @@
                     </button>
                   </div>
                   <div data-grid-page-info="gameLedger">Page 1 of 1 • 0 rows</div>
+                </div>
+              </div>
+            </section>
+
+            <!-- REWARDS PANEL -->
+            <section class="ci-admin-panel" data-panel="rewards">
+              <div class="ci-panel-header">
+                <div class="ci-panel-header-left">
+                  <h2>Rewards</h2>
+                  <div class="ci-panel-subtitle">
+                    Reward claims, bonuses, and comps recorded in the Rewards sheet.
+                  </div>
+                </div>
+                <div class="ci-panel-header-right">
+                  <button type="button" class="ci-btn-secondary" data-grid-refresh="rewards">
+                    Refresh
+                  </button>
+                  <button type="button" class="ci-btn-ghost" data-grid-print="rewards">
+                    Print
+                  </button>
+                </div>
+              </div>
+
+              <div class="ci-toolbar">
+                <div class="ci-toolbar-left">
+                  <div class="ci-toolbar-search-wrap">
+                    <span class="ci-toolbar-search-icon"></span>
+                    <input
+                      type="search"
+                      class="ci-input ci-toolbar-search"
+                      placeholder="Search (Player ID, Username, Reward Type, Notes...)"
+                      autocomplete="off"
+                      data-grid-search="rewards"
+                    />
+                  </div>
+                  <button type="button" class="ci-btn-ghost" data-grid-show-all="rewards">
+                    Show All
+                  </button>
+                </div>
+                <div class="ci-toolbar-right">
+                  <label>
+                    Page Size
+                    <select class="ci-select" data-grid-page-size="rewards">
+                      <option value="25" selected>25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+
+              <div class="ci-table-wrap">
+                <div class="ci-table-scroll">
+                  <table class="ci-table">
+                    <thead>
+                      <tr data-grid-head="rewards"></tr>
+                    </thead>
+                    <tbody data-grid-body="rewards"></tbody>
+                  </table>
+                </div>
+                <div class="ci-pagination" data-grid-pagination="rewards">
+                  <div>
+                    <button type="button" class="ci-btn-ghost" data-grid-prev="rewards">
+                      ◀ Prev
+                    </button>
+                    <button type="button" class="ci-btn-ghost" data-grid-next="rewards">
+                      Next ▶
+                    </button>
+                  </div>
+                  <div data-grid-page-info="rewards">Page 1 of 1 • 0 rows</div>
                 </div>
               </div>
             </section>
@@ -1849,7 +1920,6 @@
       <div id="ci-admin-loading-text">Working…</div>
     </div>
   </div>
-
   <script>
     "use strict";
 
@@ -1875,12 +1945,13 @@
         players: false,
         log: false,
         gameLedger: false,
+        adminLog: false,
+        rewards: false,
         cashouts: false,
+        reports: false,
+        blacklist: false,
         stripe: false,
         paypal: false,
-        blacklist: false,
-        reports: false,
-        adminLog: false,
       },
     };
 
@@ -2147,6 +2218,8 @@
           loadSheetGrid("log", "Log", 500);
         } else if (panelName === "gameLedger") {
           loadSheetGrid("gameLedger", "Game Ledger", 500);
+        } else if (panelName === "rewards") {
+          loadSheetGrid("rewards", "Rewards", 500);
         } else if (panelName === "cashouts") {
           loadSheetGrid("cashouts", "Cashouts", 500);
         } else if (panelName === "stripe") {
@@ -2363,7 +2436,7 @@
       }
     }
 
-    // SHEET GRID HANDLING (Log, Game Ledger, Cashouts, Stripe, PayPal, Blacklist, Reports, Admin Log)
+    // SHEET GRID HANDLING (Log, Game Ledger, Rewards, Cashouts, Stripe, PayPal, Blacklist, Reports, Admin Log)
     function createSheetGrid(name, options) {
       return {
         name: name,
@@ -2381,6 +2454,10 @@
     function initSheetGrids() {
       ciState.grids.log = createSheetGrid("log", { pageSize: 25, maxRows: 500 });
       ciState.grids.gameLedger = createSheetGrid("gameLedger", {
+        pageSize: 25,
+        maxRows: 500,
+      });
+      ciState.grids.rewards = createSheetGrid("rewards", {
         pageSize: 25,
         maxRows: 500,
       });
@@ -2416,6 +2493,8 @@
           return "Log";
         case "gameLedger":
           return "Game Ledger";
+        case "rewards":
+          return "Rewards";
         case "cashouts":
           return "Cashouts";
         case "stripe":
@@ -2632,6 +2711,7 @@
       const gridNames = [
         "log",
         "gameLedger",
+        "rewards",
         "cashouts",
         "stripe",
         "paypal",
@@ -2753,7 +2833,6 @@
         });
       }
     }
-
     // PLAYERS TAB — search, sort, pagination, KYC, comp/adjust, manual cashout
     function initPlayersDomHandlers() {
       const searchInput = qs("#ci-players-search");
