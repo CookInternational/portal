@@ -976,9 +976,7 @@
           <div class="ci-admin-titleblock">
             <div class="ci-admin-kicker">Cook International Casino</div>
             <div class="ci-admin-title">Admin Portal &amp; House Dashboard</div>
-            <div class="ci-admin-subtitle">
-              Secure internal portal for Cook International Casino.
-            </div>
+            <div class="ci-admin-subtitle"></div>
           </div>
         </div>
         <div class="ci-admin-header-meta">
@@ -1075,7 +1073,7 @@
               <span>REPORTS</span><strong>KPIs</strong>
             </button>
             <button type="button" class="ci-admin-tab" data-tab="blacklist">
-              <span>RISK</span><strong>Blacklist</strong>
+              <span>BLACKLIST</span><strong>Risk</strong>
             </button>
             <button type="button" class="ci-admin-tab" data-tab="stripe">
               <span>STRIPE</span><strong>Ledger</strong>
@@ -2302,6 +2300,7 @@
         const idxUser = cashHeaders.indexOf("Username");
         const idxEmail = cashHeaders.indexOf("Email");
         const idxReq = cashHeaders.indexOf("Requested Chips");
+        const idxUsd = cashHeaders.indexOf("USD Equivalent");
         const idxMethod = cashHeaders.indexOf("Payout Method");
 
         // KPI cards
@@ -2400,6 +2399,7 @@
               const userVal = idxUser >= 0 ? row[idxUser] : "";
               const emailVal = idxEmail >= 0 ? row[idxEmail] : "";
               const reqVal = idxReq >= 0 ? row[idxReq] : "";
+              const usdVal = idxUsd >= 0 ? row[idxUsd] : "";
               const methodVal = idxMethod >= 0 ? row[idxMethod] : "";
 
               const playerLabel =
@@ -2414,7 +2414,18 @@
               tdPlayer.textContent = trimString(playerLabel, 28);
 
               const tdReq = document.createElement("td");
-              tdReq.textContent = formatNumber(reqVal);
+              if (usdVal !== null && usdVal !== undefined && usdVal !== "") {
+                const n = Number(usdVal);
+                tdReq.textContent = isNaN(n)
+                  ? "$" + String(usdVal)
+                  : "$" +
+                    n.toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    });
+              } else {
+                tdReq.textContent = formatNumber(reqVal);
+              }
 
               const tdMethod = document.createElement("td");
               tdMethod.textContent = trimString(methodVal || "—", 18);
@@ -2442,6 +2453,7 @@
         name: name,
         headers: [],
         rows: [],
+        rowNumbers: [],
         filteredIndexes: [],
         page: 1,
         pageSize: (options && options.pageSize) || 25,
@@ -2535,6 +2547,7 @@
 
         grid.headers = res.headers || [];
         grid.rows = res.rows || [];
+        grid.rowNumbers = Array.isArray(res.rowNumbers) ? res.rowNumbers : [];
 
         grid.sortIndex = 0;
         grid.sortDir = "desc";
@@ -2681,9 +2694,29 @@
           const row = rows[rowIdx] || [];
           const tr = document.createElement("tr");
 
-          row.forEach(function (cell) {
+          row.forEach(function (cell, colIdx) {
             const td = document.createElement("td");
-            td.textContent = cell == null ? "" : String(cell);
+
+            if (gridName === "rewards") {
+              const headerLabel =
+                headers[colIdx] == null ? "" : String(headers[colIdx]);
+              if (headerLabel.toLowerCase() === "status") {
+                const valueStr = cell == null ? "" : String(cell);
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "ci-link-button";
+                btn.textContent = valueStr || "(set)";
+                btn.setAttribute("data-status-edit", "rewards");
+                btn.setAttribute("data-row-idx", String(rowIdx));
+                btn.setAttribute("data-status-value", valueStr);
+                td.appendChild(btn);
+              } else {
+                td.textContent = cell == null ? "" : String(cell);
+              }
+            } else {
+              td.textContent = cell == null ? "" : String(cell);
+            }
+
             tr.appendChild(td);
           });
 
@@ -2832,7 +2865,85 @@
           window.print();
         });
       }
+
+      const rewardsBody = qs('[data-grid-body="rewards"]');
+      if (rewardsBody) {
+        rewardsBody.addEventListener("click", function (event) {
+          const btn = event.target.closest("[data-status-edit]");
+          if (!btn) return;
+          const rowIdxAttr = btn.getAttribute("data-row-idx");
+          if (!rowIdxAttr) return;
+          const rowIdx = Number(rowIdxAttr);
+          if (isNaN(rowIdx)) return;
+          const currentValue =
+            btn.getAttribute("data-status-value") || btn.textContent || "";
+          const newStatus = window.prompt(
+            "Update Rewards Status:",
+            currentValue
+          );
+          if (newStatus === null) return;
+          updateRewardsStatus(rowIdx, newStatus);
+        });
+      }
     }
+
+    async function updateRewardsStatus(rowIdx, newStatus) {
+      const grid = ciState.grids.rewards;
+      if (!grid) return;
+      if (!ciState.apiKey) {
+        setStatus("Admin API key missing. Please log in again.", true);
+        return;
+      }
+
+      const rowNumbers = grid.rowNumbers || [];
+      const rowNumber = rowNumbers[rowIdx];
+      if (!rowNumber) {
+        setStatus(
+          "Cannot update Rewards status: row mapping not available.",
+          true
+        );
+        return;
+      }
+
+      const statusColIndex = grid.headers
+        ? grid.headers.findIndex(function (h) {
+            return (
+              (h || "").toString().toLowerCase().trim() === "status"
+            );
+          })
+        : -1;
+
+      setLoading(true, "Updating reward status…");
+      setStatus("Updating reward status…", false);
+
+      try {
+        const sheetName = getSheetNameForGrid("rewards") || "Rewards";
+        const res = await adminGet("updateCellStatus", {
+          sheetName: sheetName,
+          rowNumbers: String(rowNumber),
+          status: newStatus,
+        });
+
+        if (!res || !res.ok) {
+          throw new Error((res && res.error) || "Unknown error");
+        }
+
+        if (statusColIndex >= 0 && grid.rows[rowIdx]) {
+          grid.rows[rowIdx][statusColIndex] = newStatus;
+        }
+
+        applyGridFilterAndRender("rewards");
+        setStatus("Reward status updated.", false);
+      } catch (err) {
+        setStatus(
+          "Failed to update reward status: " + String(err.message || err),
+          true
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
     // PLAYERS TAB — search, sort, pagination, KYC, comp/adjust, manual cashout
     function initPlayersDomHandlers() {
       const searchInput = qs("#ci-players-search");
@@ -3169,6 +3280,18 @@
         "</span></div>" +
         "</div>";
 
+      const drilldownsHtml =
+        '<div class="ci-side-section">' +
+        "  <h4>Player Drilldowns</h4>" +
+        '  <div class="ci-side-controls-row">' +
+        '    <button type="button" class="ci-btn-ghost" id="ci-player-view-log">View in Log</button>' +
+        '    <button type="button" class="ci-btn-ghost" id="ci-player-view-ledger">View in Game Ledger</button>' +
+        "  </div>" +
+        '  <div class="ci-side-controls-row" style="margin-top:4px;">' +
+        '    <button type="button" class="ci-btn-ghost" id="ci-player-view-rewards">View Rewards &amp; Cashouts</button>' +
+        "  </div>" +
+        "</div>";
+
       const kycStatus = player.kycStatus || "";
       const riskStatus = player.riskStatus || "";
       const vipLevel = player.vipLevel || "";
@@ -3304,7 +3427,7 @@
         "  </div>" +
         "</div>";
 
-      return headerHtml + kycHtml + selfExclHtml + adjustHtml;
+      return headerHtml + drilldownsHtml + kycHtml + selfExclHtml + adjustHtml;
     }
 
     function renderPlayerDetail(player) {
@@ -3339,6 +3462,97 @@
           applyPlayerAdjustmentFromDetail(player, true);
         });
       }
+
+      const viewLogBtn = qs("#ci-player-view-log");
+      if (viewLogBtn) {
+        viewLogBtn.addEventListener("click", function () {
+          drilldownToGridForPlayer("log", player);
+        });
+      }
+
+      const viewLedgerBtn = qs("#ci-player-view-ledger");
+      if (viewLedgerBtn) {
+        viewLedgerBtn.addEventListener("click", function () {
+          drilldownToGridForPlayer("gameLedger", player);
+        });
+      }
+
+      const viewRewardsBtn = qs("#ci-player-view-rewards");
+      if (viewRewardsBtn) {
+        viewRewardsBtn.addEventListener("click", function () {
+          drilldownPlayerRewardsAndCashouts(player);
+        });
+      }
+    }
+
+    function getPlayerSearchKey(player) {
+      if (!player) return "";
+      const pid = (player.playerId || "").toString().trim();
+      if (pid) return pid;
+      const username = (player.username || "").toString().trim();
+      if (username) return username;
+      const email = (player.email || "").toString().trim();
+      if (email) return email;
+      return "";
+    }
+
+    function drilldownToGridForPlayer(gridName, player) {
+      const searchValue = getPlayerSearchKey(player);
+      if (!searchValue) {
+        setStatus(
+          "No Player ID / Username / Email available for drilldown.",
+          true
+        );
+        return;
+      }
+
+      const searchInput = qs('[data-grid-search="' + gridName + '"]');
+      if (searchInput) {
+        searchInput.value = searchValue;
+      }
+
+      activateTab(gridName);
+
+      const grid = ciState.grids[gridName];
+      if (grid) {
+        grid.page = 1;
+        applyGridFilterAndRender(gridName);
+      }
+    }
+
+    function drilldownPlayerRewardsAndCashouts(player) {
+      const searchValue = getPlayerSearchKey(player);
+      if (!searchValue) {
+        setStatus(
+          "No Player ID / Username / Email available for drilldown.",
+          true
+        );
+        return;
+      }
+
+      const rewardsInput = qs('[data-grid-search="rewards"]');
+      if (rewardsInput) {
+        rewardsInput.value = searchValue;
+      }
+
+      const cashoutsInput = qs('[data-grid-search="cashouts"]');
+      if (cashoutsInput) {
+        cashoutsInput.value = searchValue;
+      }
+
+      const rewardsGrid = ciState.grids.rewards;
+      if (rewardsGrid) {
+        rewardsGrid.page = 1;
+        applyGridFilterAndRender("rewards");
+      }
+
+      const cashoutsGrid = ciState.grids.cashouts;
+      if (cashoutsGrid) {
+        cashoutsGrid.page = 1;
+        applyGridFilterAndRender("cashouts");
+      }
+
+      activateTab("rewards");
     }
 
     async function savePlayerFlagsFromDetail(player) {
