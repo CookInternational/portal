@@ -1,3545 +1,2342 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Cook International Casino — Admin Portal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Cook International Casino — Admin Portal (Front-End v5.0) -->
+<div id="cookintl-admin">
 
   <style>
-    :root {
-      --bg: #05020b;
-      --card-bg: radial-gradient(circle at top, #372257 0, #07030f 55%, #020007 100%);
-      --border: rgba(247, 216, 122, 0.35);
-      --accent: #f7d87a;
-      --accent-soft: rgba(247, 216, 122, 0.12);
-      --text-main: #f9f6ff;
-      --text-muted: #9ca3af;
-      --danger: #f97373;
-      --success: #4ade80;
-      --surface: rgba(15, 23, 42, 0.92);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
+    /* Root scope */
+    #cookintl-admin {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #02000a;
-      color: var(--text-main);
+      color: #f9fafb;
     }
 
-    .ci-admin-root {
-      min-height: 100vh;
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
-      padding: 32px 16px;
-      background:
-        radial-gradient(circle at top, #372257 0, #05020b 55%, #020007 100%);
+    #cookintl-admin a {
+      color: #e5e7eb;
+      text-decoration: none;
+    }
+
+    #cookintl-admin a:hover {
+      text-decoration: underline;
     }
 
     .ci-admin-shell {
-      width: 100%;
-      max-width: 1280px;
-      min-height: calc(100vh - 64px);
-      background: var(--card-bg);
-      border-radius: 26px;
-      border: 1px solid var(--border);
-      box-shadow:
-        0 24px 80px rgba(0, 0, 0, 0.7),
-        0 0 0 1px rgba(15, 23, 42, 0.8);
-      display: flex;
-      flex-direction: column;
-      overflow: visible;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 20px 16px 32px;
     }
 
-    .ci-admin-header {
-      padding: 18px 24px 12px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .ci-admin-brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .ci-admin-logo {
-      width: 185px;
-      max-width: 48vw;
-      height: auto;
-      display: block;
-    }
-
-    .ci-admin-titleblock {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .ci-admin-kicker {
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-
-    .ci-admin-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #fef9c3;
-    }
-
-    .ci-admin-subtitle {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .ci-admin-header-meta {
-      text-align: right;
-      font-size: 11px;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
-    .ci-admin-main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 8px 16px 16px;
-      overflow: visible;
-    }
-
-    #ci-admin-login-view,
-    #ci-admin-app-view {
-      width: 100%;
-    }
-
-    #ci-admin-login-view {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 0 40px;
-    }
-
-    .ci-card {
-      background: linear-gradient(
-        145deg,
-        rgba(17, 24, 39, 0.96),
-        rgba(15, 23, 42, 0.96)
-      );
-      border-radius: 22px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      box-shadow:
-        0 18px 50px rgba(15, 23, 42, 0.9),
-        0 0 0 1px rgba(15, 23, 42, 0.8);
-      padding: 24px 22px 22px;
+    /* Login */
+    .ci-admin-login {
       max-width: 420px;
-      width: 100%;
-      color: var(--text-main);
+      margin: 32px auto;
+      padding: 24px 20px 20px;
+      background: radial-gradient(circle at top, rgba(148, 163, 253, 0.45), rgba(15, 23, 42, 0.95));
+      border-radius: 24px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 253, 0.4);
     }
 
-    .ci-card h2 {
-      margin: 0 0 4px;
+    .ci-admin-login h2 {
       font-size: 20px;
-      font-weight: 600;
+      margin: 0 0 4px;
     }
 
-    .ci-card p {
-      margin: 0 0 18px;
+    .ci-admin-login p {
+      margin: 0 0 16px;
       font-size: 13px;
-      color: var(--text-muted);
+      color: #d1d5db;
     }
 
     .ci-field {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
-    .ci-field label {
+    .ci-label {
       display: block;
-      font-size: 12px;
+      font-size: 13px;
       margin-bottom: 4px;
       color: #e5e7eb;
     }
 
-    .ci-input,
-    .ci-select,
-    .ci-textarea {
+    .ci-input {
       width: 100%;
-      padding: 7px 9px;
-      border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      background: rgba(15, 23, 42, 0.98);
-      color: var(--text-main);
-      font-size: 13px;
-      outline: none;
-      transition: border-color 0.12s ease, box-shadow 0.12s ease,
-        background 0.12s ease;
-    }
-
-    .ci-input:focus,
-    .ci-select:focus,
-    .ci-textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(247, 216, 122, 0.45);
-      background: rgba(15, 23, 42, 1);
-    }
-
-    .ci-textarea {
-      min-height: 72px;
-      resize: vertical;
-    }
-
-    .ci-input::-webkit-outer-spin-button,
-    .ci-input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    .ci-input[type="number"] {
-      -moz-appearance: textfield;
-    }
-
-    .ci-btn-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 4px;
-    }
-
-    .ci-btn,
-    .ci-btn-secondary,
-    .ci-btn-ghost,
-    .ci-badge {
-      font-family: inherit;
-      font-size: 13px;
       border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      transition: background 0.12s ease, box-shadow 0.12s ease,
-        transform 0.06s ease, border-color 0.12s ease;
-      white-space: nowrap;
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 1px solid rgba(148, 163, 253, 0.6);
+      background: rgba(15, 23, 42, 0.8);
+      color: #f9fafb;
+      outline: none;
+    }
+
+    .ci-input:focus {
+      border-color: #a5b4fc;
+      box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.35);
     }
 
     .ci-btn {
-      background: linear-gradient(135deg, #facc6b, #f7d87a);
-      color: #221600;
-      padding: 7px 16px;
-      font-weight: 600;
-      box-shadow: 0 8px 20px rgba(248, 213, 116, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 14px;
+      border: 0;
+      cursor: pointer;
+      background: linear-gradient(135deg, #4f46e5, #a855f7);
+      color: #f9fafb;
+      font-weight: 500;
+      box-shadow: 0 12px 30px rgba(79, 70, 229, 0.45);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
     }
 
     .ci-btn:hover {
-      box-shadow: 0 10px 26px rgba(248, 213, 116, 0.3);
-      transform: translateY(-0.5px);
+      transform: translateY(-1px);
+      box-shadow: 0 16px 40px rgba(79, 70, 229, 0.6);
+      opacity: 0.95;
     }
 
-    .ci-btn:active {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
-      transform: translateY(0.5px);
+    .ci-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
     }
 
     .ci-btn-secondary {
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
-      border: 1px solid rgba(148, 163, 184, 0.9);
-      padding: 6px 13px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(148, 163, 253, 0.5);
+      box-shadow: none;
     }
 
-    .ci-btn-secondary:hover {
-      border-color: var(--accent);
-      background: rgba(15, 23, 42, 1);
-    }
-
-    .ci-btn-ghost {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      padding: 5px 11px;
+    .ci-login-error {
+      margin-top: 8px;
       font-size: 12px;
+      color: #fecaca;
+      min-height: 14px;
     }
 
-    .ci-btn-ghost:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .ci-badge {
-      padding: 2px 8px;
-      font-size: 11px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.65);
-      color: var(--text-muted);
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .ci-badge-online {
-      color: var(--success);
-      border-color: rgba(74, 222, 128, 0.8);
-    }
-
-    .ci-badge-danger {
-      color: var(--danger);
-      border-color: rgba(248, 113, 113, 0.85);
-    }
-
-    .ci-admin-footer {
-      padding: 8px 18px 10px;
-      border-top: 1px solid rgba(30, 41, 59, 0.8);
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      text-align: center;
-      color: #9ca3af;
-      background: rgba(15, 23, 42, 0.96);
-    }
-
-    /* Status + loading */
-    .ci-admin-status {
-      min-height: 20px;
-      padding: 6px 12px;
-      font-size: 11px;
-      color: var(--text-muted);
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.45);
+    /* Header */
+    .ci-admin-header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      max-width: 540px;
-      margin: 0 auto 8px;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 14px;
     }
 
-    .ci-admin-status-error {
-      color: var(--danger);
-      border-color: rgba(248, 113, 113, 0.85);
-      background: rgba(30, 64, 175, 0.1);
+    .ci-admin-title-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .ci-dot {
-      width: 7px;
-      height: 7px;
+    .ci-admin-logo {
+      width: 36px;
+      height: 36px;
       border-radius: 999px;
-      background: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .ci-admin-loading {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at center, rgba(15, 23, 42, 0.28), rgba(15, 23, 42, 0.9));
-      display: none;
+      background: radial-gradient(circle at top, #f97316, #111827);
+      display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 9999;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fef3c7;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.85);
     }
 
-    .ci-admin-loading-inner {
-      padding: 16px 20px;
-      border-radius: 18px;
-      background: rgba(15, 23, 42, 0.96);
-      border: 1px solid rgba(148, 163, 184, 0.75);
+    .ci-admin-title-text {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 13px;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ci-admin-title-text h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .ci-admin-title-text span {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .ci-admin-user {
+      font-size: 12px;
+      color: #d1d5db;
+      text-align: right;
+    }
+
+    .ci-admin-user strong {
+      font-weight: 600;
       color: #e5e7eb;
     }
 
-    .ci-spinner {
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      border: 2px solid rgba(148, 163, 184, 0.4);
-      border-top-color: var(--accent);
-      animation: ci-spin 0.8s linear infinite;
-    }
-
-    @keyframes ci-spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* App view */
-    #ci-admin-app-view {
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      padding: 6px 0 20px;
-    }
-
+    /* Tabs */
     .ci-admin-tabs {
       display: flex;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       gap: 6px;
-      padding: 4px 2px 2px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.92);
-      border: 1px solid rgba(30, 64, 175, 0.5);
-      overflow-x: auto;
-      scrollbar-width: thin;
-    }
-
-    .ci-admin-tabs::-webkit-scrollbar {
-      height: 5px;
-    }
-
-    .ci-admin-tabs::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.6);
-      border-radius: 999px;
+      margin-bottom: 14px;
     }
 
     .ci-admin-tab {
       border-radius: 999px;
-      border: none;
-      padding: 5px 12px;
+      padding: 6px 10px;
+      border: 0;
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
       font-size: 12px;
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      white-space: nowrap;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
+      cursor: pointer;
+      border: 1px solid transparent;
     }
 
     .ci-admin-tab span {
       font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
     }
 
     .ci-admin-tab strong {
-      font-weight: 500;
+      font-size: 12px;
     }
 
-    .ci-admin-tab-active {
-      background: radial-gradient(circle at top, rgba(247, 216, 122, 0.08), rgba(15, 23, 42, 0.98));
-      color: #fef9c3;
-      box-shadow:
-        0 0 0 1px rgba(248, 213, 116, 0.45),
-        0 10px 24px rgba(0, 0, 0, 0.9);
+    .ci-admin-tab.is-active {
+      background: radial-gradient(circle at top, rgba(79, 70, 229, 0.8), rgba(15, 23, 42, 0.95));
+      border-color: rgba(129, 140, 248, 0.7);
+      box-shadow: 0 10px 30px rgba(55, 48, 163, 0.7);
     }
 
-    .ci-admin-tab-active strong {
-      color: #fef9c3;
-    }
-
-    .ci-admin-panels {
-      margin-top: 10px;
-      flex: 1;
-      min-height: 0;
+    /* Panels */
+    .ci-admin-main {
+      border-radius: 30px;
+      padding: 20px 18px 18px;
+      background: radial-gradient(circle at top, rgba(30, 64, 175, 0.65), rgba(15, 23, 42, 0.98));
+      box-shadow: 0 26px 60px rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 253, 0.55);
+      min-height: 280px;
     }
 
     .ci-admin-panel {
       display: none;
+    }
+
+    .ci-admin-panel.is-active {
+      display: block;
+    }
+
+    /* Cards / Layout */
+    .ci-dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .ci-dashboard-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .ci-admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .ci-admin-user {
+        text-align: left;
+      }
+    }
+
+    .ci-card {
       border-radius: 22px;
-      background: rgba(15, 23, 42, 0.96);
-      border: 1px solid rgba(30, 64, 175, 0.8);
       padding: 14px 14px 12px;
-      min-height: 420px;
-      flex-direction: column;
-      overflow: visible;
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(75, 85, 99, 0.9);
     }
 
-    .ci-admin-panel-active {
+    .ci-card-header {
       display: flex;
-    }
-
-    .ci-panel-header {
-      display: flex;
-      align-items: center;
+      align-items: baseline;
       justify-content: space-between;
-      gap: 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(51, 65, 85, 0.85);
+      gap: 8px;
       margin-bottom: 8px;
     }
 
-    .ci-panel-header-left h2 {
-      margin: 0;
-      font-size: 15px;
+    .ci-card-title {
+      font-size: 13px;
       font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
     }
 
-    .ci-panel-subtitle {
+    .ci-card-sub {
       font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
+      color: #9ca3af;
     }
 
-    .ci-panel-header-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .ci-toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 8px;
+    .ci-small-note {
       font-size: 11px;
-      color: var(--text-muted);
+      color: #9ca3af;
+      margin-top: 6px;
     }
 
-    .ci-toolbar-left,
-    .ci-toolbar-right {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .ci-toolbar-search-wrap {
-      position: relative;
-      flex: 1 1 220px;
-      min-width: 180px;
-    }
-
-    .ci-toolbar-search {
-      padding-left: 24px;
-    }
-
-    .ci-toolbar-search-icon {
-      position: absolute;
-      left: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      border: 2px solid rgba(148, 163, 184, 0.9);
-      box-sizing: border-box;
-    }
-
-    .ci-toolbar-search-icon::after {
-      content: "";
-      position: absolute;
-      right: -4px;
-      bottom: -5px;
-      width: 5px;
-      height: 2px;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, 0.9);
-      transform: rotate(45deg);
-    }
-
-    .ci-toolbar label {
+    .ci-chip {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-    }
-
-    .ci-toolbar select {
-      min-width: 64px;
+      border-radius: 999px;
+      padding: 2px 8px;
       font-size: 11px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 253, 0.6);
+      color: #e5e7eb;
     }
 
+    .ci-chip-muted {
+      background: rgba(31, 41, 55, 0.9);
+      border-color: rgba(75, 85, 99, 0.9);
+    }
+
+    /* Table */
     .ci-table-wrap {
-      border-radius: 16px;
-      border: 1px solid rgba(30, 64, 175, 0.9);
-      background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.22), rgba(15, 23, 42, 0.98));
-      overflow: hidden;
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .ci-table-scroll {
+      max-height: 340px;
       overflow: auto;
-      flex: 1;
+      border-radius: 16px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
     }
 
     table.ci-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 11px;
-      min-width: 640px;
     }
 
-    .ci-table thead {
+    table.ci-table thead {
+      background: rgba(15, 23, 42, 0.96);
       position: sticky;
       top: 0;
       z-index: 1;
-      background: rgba(15, 23, 42, 0.98);
     }
 
-    .ci-table th,
-    .ci-table td {
+    table.ci-table th,
+    table.ci-table td {
       padding: 6px 8px;
-      border-bottom: 1px solid rgba(30, 64, 175, 0.6);
-      text-align: left;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      text-align: left;
     }
 
-    .ci-table th {
+    table.ci-table th {
       font-weight: 500;
-      color: #e5e7eb;
+      color: #9ca3af;
       cursor: pointer;
-      position: relative;
-      user-select: none;
+      border-bottom: 1px solid rgba(55, 65, 81, 0.9);
     }
 
-    .ci-table th[data-sortable="false"] {
-      cursor: default;
+    table.ci-table td {
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
     }
 
-    .ci-table th span.ci-sort-indicator {
-      font-size: 9px;
-      margin-left: 4px;
-      opacity: 0.7;
+    table.ci-table tr:nth-child(even) td {
+      background: rgba(17, 24, 39, 0.85);
     }
 
-    .ci-table tr:nth-child(even) td {
-      background: rgba(15, 23, 42, 0.88);
+    table.ci-table tr:nth-child(odd) td {
+      background: rgba(15, 23, 42, 0.95);
     }
 
-    .ci-table tr:nth-child(odd) td {
-      background: rgba(15, 23, 42, 0.96);
+    table.ci-table tr:hover td {
+      background: rgba(30, 64, 175, 0.5);
     }
 
-    .ci-table tr:hover td {
-      background: rgba(30, 64, 175, 0.6);
-    }
-
-    .ci-table-row-selected td {
-      background: rgba(247, 216, 122, 0.08) !important;
-    }
-
-    .ci-tag {
+    .ci-th-sort {
       display: inline-flex;
       align-items: center;
-      border-radius: 999px;
-      padding: 1px 8px 2px;
+      gap: 4px;
+    }
+
+    .ci-sort-indicator {
       font-size: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      color: var(--text-muted);
+      opacity: 0.6;
     }
 
-    .ci-tag-green {
-      border-color: rgba(74, 222, 128, 0.9);
-      color: var(--success);
-    }
-
-    .ci-tag-red {
-      border-color: rgba(248, 113, 113, 0.9);
-      color: var(--danger);
-    }
-
-    .ci-tag-gold {
-      border-color: rgba(247, 216, 122, 0.9);
-      color: #fef9c3;
-    }
-
-    .ci-pagination {
+    /* Grid toolbar */
+    .ci-grid-toolbar {
       display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      padding: 6px 8px;
+      margin-bottom: 8px;
       font-size: 11px;
-      color: var(--text-muted);
-      border-top: 1px solid rgba(30, 64, 175, 0.9);
-      background: rgba(15, 23, 42, 0.98);
     }
 
-    .ci-pagination span {
-      white-space: nowrap;
+    .ci-grid-toolbar-left,
+    .ci-grid-toolbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
     }
 
-    .ci-link-button {
-      background: none;
-      border: none;
-      padding: 0;
-      margin: 0;
-      color: #bfdbfe;
+    .ci-grid-search {
+      min-width: 180px;
+    }
+
+    .ci-select {
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      font-size: 11px;
+    }
+
+    .ci-pill-btn {
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 11px;
       cursor: pointer;
-      font: inherit;
-      text-decoration: underline;
-      text-underline-offset: 2px;
     }
 
-    .ci-link-button:hover {
-      color: #f9f6ff;
+    .ci-pill-btn:hover {
+      border-color: rgba(129, 140, 248, 0.7);
     }
 
+    /* Status select */
+    .ci-status-select {
+      border-radius: 999px;
+      padding: 2px 8px;
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      background: rgba(17, 24, 39, 0.95);
+      color: #e5e7eb;
+      font-size: 11px;
+    }
+
+    /* Split layout (Players) */
     .ci-split {
       display: grid;
-      grid-template-columns: minmax(0, 2.3fr) minmax(260px, 1.2fr);
-      gap: 10px;
-      flex: 1;
-      min-height: 0;
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.1fr);
+      gap: 14px;
     }
 
-    .ci-split-main {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      min-height: 0;
-    }
-
-    .ci-split-side {
-      border-radius: 16px;
-      border: 1px solid rgba(30, 64, 175, 0.9);
-      background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.25), rgba(15, 23, 42, 0.98));
-      padding: 10px 10px 8px;
-      font-size: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 0;
-    }
-
-    .ci-side-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      border-bottom: 1px solid rgba(51, 65, 85, 0.8);
-      padding-bottom: 4px;
-      margin-bottom: 4px;
-    }
-
-    .ci-side-title h3 {
-      margin: 0;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .ci-side-section {
-      border-radius: 12px;
-      border: 1px solid rgba(30, 64, 175, 0.85);
-      padding: 6px 7px;
-      background: rgba(15, 23, 42, 0.95);
-      margin-bottom: 6px;
-    }
-
-    .ci-side-section h4 {
-      margin: 0 0 4px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .ci-side-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 6px;
-      font-size: 11px;
-      margin-bottom: 2px;
-    }
-
-    .ci-side-label {
-      color: var(--text-muted);
-    }
-
-    .ci-side-value {
-      text-align: right;
-    }
-
-    .ci-side-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px 8px;
-      font-size: 11px;
-    }
-
-    .ci-side-controls-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-
-    .ci-side-callout {
-      font-size: 11px;
-      color: var(--text-muted);
-      padding: 4px 6px;
-      border-radius: 10px;
-      border: 1px dashed rgba(148, 163, 184, 0.8);
-      margin-top: 2px;
-    }
-
-    .ci-kpi-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .ci-kpi-card {
-      border-radius: 14px;
-      border: 1px solid rgba(30, 64, 175, 0.9);
-      background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.3), rgba(15, 23, 42, 0.98));
-      padding: 8px 9px 7px;
-      font-size: 11px;
-    }
-
-    .ci-kpi-label {
-      color: var(--text-muted);
-      margin-bottom: 2px;
-    }
-
-    .ci-kpi-value {
-      font-size: 16px;
-      font-weight: 600;
-      color: #fef9c3;
-    }
-
-    .ci-kpi-note {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .ci-dashboard-bottom {
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-      gap: 10px;
-      margin-top: 6px;
-      min-height: 0;
-      flex: 1;
-    }
-
-    .ci-dashboard-card {
-      border-radius: 14px;
-      border: 1px solid rgba(30, 64, 175, 0.9);
-      background: rgba(15, 23, 42, 0.96);
-      padding: 8px 9px 6px;
-      font-size: 11px;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    .ci-dashboard-card h3 {
-      margin: 0 0 4px;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .ci-dashboard-card ul {
-      list-style: none;
-      padding: 0;
-      margin: 2px 0 0;
-      font-size: 11px;
-    }
-
-    .ci-dashboard-card li {
-      margin-bottom: 3px;
-      color: var(--text-muted);
-    }
-
-    .ci-dashboard-mini-table {
-      border-radius: 10px;
-      border: 1px solid rgba(30, 64, 175, 0.9);
-      background: rgba(15, 23, 42, 0.96);
-      padding: 4px;
-      margin-top: 4px;
-      overflow: auto;
-      max-height: 240px;
-    }
-
-    .ci-dashboard-mini-table table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 10px;
-      min-width: 320px;
-    }
-
-    .ci-dashboard-mini-table th,
-    .ci-dashboard-mini-table td {
-      border-bottom: 1px solid rgba(30, 64, 175, 0.75);
-      padding: 4px 5px;
-      white-space: nowrap;
-    }
-
-    /* Small utility */
-    .ci-mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    }
-
-    .ci-pill {
-      border-radius: 999px;
-      padding: 2px 6px 3px;
-      font-size: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      color: var(--text-muted);
-    }
-
-    /* Responsive tweaks */
-    @media (max-width: 960px) {
-      .ci-admin-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .ci-admin-header-meta {
-        text-align: left;
-      }
-
+    @media (max-width: 980px) {
       .ci-split {
         grid-template-columns: minmax(0, 1fr);
       }
     }
 
+    .ci-side-panel {
+      border-radius: 22px;
+      padding: 12px 12px 10px;
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.98));
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      max-height: 370px;
+      overflow: auto;
+    }
+
+    .ci-side-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .ci-side-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ci-side-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .ci-side-sub {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .ci-side-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      justify-content: flex-end;
+    }
+
+    .ci-side-pill {
+      border-radius: 999px;
+      padding: 2px 8px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .ci-side-pill:hover {
+      border-color: rgba(129, 140, 248, 0.7);
+    }
+
+    .ci-side-section {
+      margin-bottom: 8px;
+    }
+
+    .ci-side-section h4 {
+      margin: 0 0 4px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+    }
+
+    .ci-side-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 4px 8px;
+      font-size: 11px;
+    }
+
     @media (max-width: 600px) {
-      .ci-admin-shell {
-        border-radius: 0;
-      }
-
-      .ci-admin-root {
-        padding: 0;
-      }
-
-      .ci-admin-main {
-        padding: 8px 10px 12px;
-      }
-
-      .ci-admin-panel {
-        max-height: none;
+      .ci-side-grid {
+        grid-template-columns: minmax(0, 1fr);
       }
     }
 
-    /* Print: only print active panel content */
-    @media print {
-      body {
-        background: #ffffff;
-      }
+    .ci-side-field-label {
+      color: #9ca3af;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
 
-      .ci-admin-root {
-        padding: 0;
-      }
+    .ci-side-field-value {
+      font-size: 11px;
+    }
 
-      .ci-admin-shell {
-        min-height: auto;
-        box-shadow: none;
-        border-radius: 0;
-      }
+    .ci-side-full-record {
+      font-size: 11px;
+      border-top: 1px dashed rgba(55, 65, 81, 0.9);
+      padding-top: 6px;
+      margin-top: 4px;
+    }
 
-      .ci-admin-header,
-      .ci-admin-footer,
-      .ci-admin-tabs,
-      #ci-admin-login-view,
-      .ci-admin-status,
-      .ci-pagination,
-      .ci-admin-loading {
-        display: none !important;
-      }
+    .ci-side-full-record-row {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 4px;
+      margin-bottom: 3px;
+    }
 
-      .ci-admin-panel {
-        display: none !important;
-        border: none;
-        max-height: none;
-      }
+    .ci-side-full-record-label {
+      color: #9ca3af;
+      font-size: 10px;
+    }
 
-      .ci-admin-panel-active {
-        display: block !important;
-        border: none;
-        box-shadow: none;
-      }
+    .ci-side-full-record-value {
+      font-size: 11px;
+      color: #e5e7eb;
+      overflow-wrap: anywhere;
+    }
+
+    /* Dashboard cashouts widget */
+    .ci-dash-cashouts-table {
+      max-height: 230px;
+      overflow: auto;
+      border-radius: 16px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      margin-top: 4px;
+    }
+
+    .ci-dash-cashouts-table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .ci-dash-cashouts-table th,
+    .ci-dash-cashouts-table td {
+      padding: 5px 7px;
+      white-space: nowrap;
+      text-align: left;
+    }
+
+    .ci-dash-cashouts-table thead {
+      background: rgba(15, 23, 42, 0.96);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .ci-dash-cashouts-table tr:nth-child(even) td {
+      background: rgba(17, 24, 39, 0.96);
+    }
+
+    .ci-dash-cashouts-table tr:nth-child(odd) td {
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    /* Reports Graph */
+    .ci-reports-view-toggle {
+      display: inline-flex;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      overflow: hidden;
+    }
+
+    .ci-reports-view-btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      background: transparent;
+      border: none;
+      color: #e5e7eb;
+      cursor: pointer;
+    }
+
+    .ci-reports-view-btn.is-active {
+      background: rgba(55, 65, 81, 0.9);
+    }
+
+    .ci-reports-graph {
+      margin-top: 8px;
+      max-height: 340px;
+      overflow: auto;
+      border-radius: 16px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 10px;
+      font-size: 11px;
+    }
+
+    .ci-kpi-row {
+      margin-bottom: 10px;
+    }
+
+    .ci-kpi-label {
+      font-size: 11px;
+      color: #d1d5db;
+      margin-bottom: 2px;
+    }
+
+    .ci-kpi-bars {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .ci-kpi-bar {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.8);
+      flex-shrink: 0;
+    }
+
+    .ci-kpi-bar-secondary {
+      background: rgba(244, 114, 182, 0.8);
+    }
+
+    .ci-kpi-bar-tertiary {
+      background: rgba(52, 211, 153, 0.85);
+    }
+
+    .ci-kpi-legend {
+      display: flex;
+      gap: 6px;
+      margin-top: 2px;
+      flex-wrap: wrap;
+    }
+
+    .ci-kpi-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .ci-kpi-dot-primary {
+      background: rgba(59, 130, 246, 0.9);
+    }
+
+    .ci-kpi-dot-secondary {
+      background: rgba(244, 114, 182, 0.9);
+    }
+
+    .ci-kpi-dot-tertiary {
+      background: rgba(52, 211, 153, 0.95);
+    }
+
+    /* Misc */
+    .ci-muted {
+      color: #9ca3af;
+    }
+
+    .ci-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 10px;
+      background: rgba(37, 99, 235, 0.3);
+      border: 1px solid rgba(59, 130, 246, 0.7);
+      color: #dbeafe;
     }
   </style>
-</head>
 
-<body>
-  <div class="ci-admin-root">
-    <div class="ci-admin-shell">
-      <header class="ci-admin-header">
-        <div class="ci-admin-brand">
-          <img
-            src="https://www.cook-international.com/s/CookIntlCasino.png"
-            alt="Cook International Casino"
-            class="ci-admin-logo"
-          />
-          <div class="ci-admin-titleblock">
-            <div class="ci-admin-kicker">Cook International Casino</div>
-            <div class="ci-admin-title">Admin Portal &amp; House Dashboard</div>
-            <div class="ci-admin-subtitle">
-              Secure internal portal for Cook International Casino.
+  <!-- Login -->
+  <div class="ci-admin-login" id="ci-admin-login">
+    <h2>Cook International Casino</h2>
+    <p>Owner / Risk Admin portal login.</p>
+
+    <form id="ci-login-form">
+      <div class="ci-field">
+        <label class="ci-label" for="ci-login-user">Admin Email</label>
+        <input id="ci-login-user" class="ci-input" type="email" autocomplete="username" required />
+      </div>
+      <div class="ci-field">
+        <label class="ci-label" for="ci-login-pass">Password</label>
+        <input id="ci-login-pass" class="ci-input" type="password" autocomplete="current-password" required />
+      </div>
+      <button type="submit" class="ci-btn" id="ci-login-submit">Sign In</button>
+      <div class="ci-login-error" id="ci-login-error"></div>
+      <div class="ci-small-note">
+        Internal access only. All actions logged to Admin Log & global Log.
+      </div>
+    </form>
+  </div>
+
+  <!-- Main Shell -->
+  <div class="ci-admin-shell" id="ci-admin-shell" style="display:none;">
+
+    <header class="ci-admin-header">
+      <div class="ci-admin-title-block">
+        <div class="ci-admin-logo">C</div>
+        <div class="ci-admin-title-text">
+          <h1>Cook International Casino — Admin Portal</h1>
+          <span>Blackjack · Slots · Table Games · Risk & Compliance</span>
+        </div>
+      </div>
+      <div class="ci-admin-user">
+        Signed in as<br />
+        <strong id="ci-admin-user-label">Owner</strong>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="ci-admin-tabs" id="ci-admin-tabs">
+      <button type="button" class="ci-admin-tab is-active" data-tab="dashboard">
+        <span>HOME</span><strong>Dashboard</strong>
+      </button>
+      <button type="button" class="ci-admin-tab" data-tab="players">
+        <span>PLAYERS</span><strong>Accounts</strong>
+      </button>
+      <button type="button" class="ci-admin-tab" data-tab="cashouts">
+        <span>PAYOUT</span><strong>Cashouts</strong>
+      </button>
+      <button type="button" class="ci-admin-tab" data-tab="rewards">
+        <span>LOYALTY</span><strong>Rewards</strong>
+      </button>
+      <button type="button" class="ci-admin-tab" data-tab="gameLedger">
+        <span>TABLES</span><strong>Game Ledger</strong>
+      </button>
+      <button type="button" class="ci-admin-tab" data-tab="log">
+        <span>AUDIT</span><strong>Log</strong>
+      </button>
+      <button type="button" class="ci-admin-tab" data-tab="reports">
+        <span>HOUSE</span><strong>Reports</strong>
+      </button>
+      <button type="button" class="ci-admin-tab" data-tab="stripe">
+        <span>CARDS</span><strong>Stripe</strong>
+      </button>
+      <button type="button" class="ci-admin-tab" data-tab="paypal">
+        <span>WALLETS</span><strong>PayPal</strong>
+      </button>
+      <button type="button" class="ci-admin-tab" data-tab="blacklist">
+        <span>BLACKLIST</span><strong>Risk</strong>
+      </button>
+      <button type="button" class="ci-admin-tab" data-tab="adminlog">
+        <span>SYS</span><strong>Admin Log</strong>
+      </button>
+      <button type="button" class="ci-admin-tab" data-tab="settings">
+        <span>SYSTEM</span><strong>Settings</strong>
+      </button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="ci-admin-main">
+
+      <!-- DASHBOARD -->
+      <section class="ci-admin-panel is-active" data-tab-panel="dashboard">
+        <div class="ci-dashboard-grid">
+          <div class="ci-card">
+            <div class="ci-card-header">
+              <div>
+                <div class="ci-card-title">Overview</div>
+                <div class="ci-card-sub">
+                  House snapshot, active players, and chips in play.
+                </div>
+              </div>
+              <button type="button" class="ci-pill-btn" data-dashboard-refresh>
+                Refresh
+              </button>
+            </div>
+
+            <!-- Simple high-level KPIs (data fed from Reports if available) -->
+            <div id="ci-dashboard-kpis" class="ci-side-grid" style="margin-bottom:8px;">
+              <!-- Filled via JS from Reports / backend -->
+            </div>
+
+            <div class="ci-small-note">
+              Aggregates are driven by the <span class="ci-badge">Reports</span> tab snapshot
+              and live ledger activity.
+            </div>
+          </div>
+
+          <div class="ci-card">
+            <div class="ci-card-header">
+              <div>
+                <div class="ci-card-title">Recent Cashout Requests</div>
+                <div class="ci-card-sub">
+                  Uses <strong>Requested At</strong> (Column A) and <strong>USD Equivalent</strong> (Column G).
+                </div>
+              </div>
+              <span class="ci-chip ci-chip-muted">Last 5</span>
+            </div>
+            <div data-dashboard-cashouts class="ci-dash-cashouts-table">
+              Loading recent cashouts...
+            </div>
+            <div class="ci-small-note">
+              Status & payout method are editable on the full Cashouts tab.
             </div>
           </div>
         </div>
-        <div class="ci-admin-header-meta">
-          <div>Status: <span class="ci-badge ci-badge-online" id="ci-admin-status-badge">Offline</span></div>
-          <div class="ci-mono" style="margin-top: 2px; opacity: 0.8;">
-            Web App: <span id="ci-admin-webapp-label">Script Endpoint</span>
-          </div>
-        </div>
-      </header>
+      </section>
 
-      <main class="ci-admin-main">
-        <div id="ci-admin-status-strip" class="ci-admin-status">
-          <span class="ci-dot"></span>
-          <span id="ci-admin-status-text">Enter your admin credentials to unlock the portal.</span>
-        </div>
-
-        <!-- LOGIN VIEW -->
-        <section id="ci-admin-login-view">
-          <div class="ci-card">
-            <h2>Admin Login</h2>
-            <p>
-              Sign in with your internal Cook International Casino admin credentials.
-              This panel is for house use only.
-            </p>
-
-            <form id="ci-admin-login-form" autocomplete="off">
-              <div class="ci-field">
-                <label for="ci-admin-username">Admin Email / Username</label>
-                <input
-                  id="ci-admin-username"
-                  class="ci-input"
-                  type="email"
-                  inputmode="email"
-                  autocomplete="off"
-                  placeholder="info@cook-international.com"
-                  required
-                />
+      <!-- PLAYERS -->
+      <section class="ci-admin-panel" data-tab-panel="players">
+        <div class="ci-split">
+          <!-- Left: Players Grid -->
+          <div>
+            <div class="ci-grid-toolbar">
+              <div class="ci-grid-toolbar-left">
+                <span class="ci-card-sub">Players Sheet</span>
               </div>
-
-              <div class="ci-field">
-                <label for="ci-admin-password">Password</label>
+              <div class="ci-grid-toolbar-right">
                 <input
-                  id="ci-admin-password"
-                  class="ci-input"
-                  type="password"
-                  autocomplete="off"
-                  placeholder="Enter admin password"
-                  required
+                  type="search"
+                  class="ci-input ci-grid-search"
+                  placeholder="Search (Player ID, Username, Email, Name...)"
+                  data-grid-search="players"
                 />
-              </div>
-
-              <div class="ci-btn-row">
-                <button type="submit" class="ci-btn">Sign In</button>
-                <button type="button" class="ci-btn-secondary" id="ci-admin-login-reset">
-                  Clear
+                <button type="button" class="ci-pill-btn" data-grid-reload="players">
+                  Reload
                 </button>
               </div>
-            </form>
-
-            <div style="margin-top: 14px; font-size: 11px; color: var(--text-muted);">
-              All activity in this portal is logged to <span class="ci-mono">Admin Log</span>.
+            </div>
+            <div class="ci-table-wrap" data-grid-table="players">
+              <!-- table injected by JS -->
             </div>
           </div>
-        </section>
 
-        <!-- APP VIEW -->
-        <section id="ci-admin-app-view">
-          <!-- Tabs -->
-          <nav class="ci-admin-tabs" aria-label="Admin sections">
-            <button type="button" class="ci-admin-tab" data-tab="dashboard">
-              <span>DASHBOARD</span><strong>Overview</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="players">
-              <span>PLAYERS</span><strong>Accounts</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="log">
-              <span>LOG</span><strong>Events</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="gameLedger">
-              <span>LEDGER</span><strong>Game Rounds</strong>
-            </button>
-
-            <!-- Back office tabs, in requested order -->
-            <button type="button" class="ci-admin-tab" data-tab="adminLog">
-              <span>ADMIN</span><strong>Log</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="rewards">
-              <span>REWARDS</span><strong>Ledger</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="cashouts">
-              <span>CASHOUTS</span><strong>Requests</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="reports">
-              <span>REPORTS</span><strong>KPIs</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="blacklist">
-              <span>RISK</span><strong>Blacklist</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="stripe">
-              <span>STRIPE</span><strong>Ledger</strong>
-            </button>
-            <button type="button" class="ci-admin-tab" data-tab="paypal">
-              <span>PAYPAL</span><strong>Ledger</strong>
-            </button>
-          </nav>
-
-          <!-- Panels -->
-          <div class="ci-admin-panels">
-            <!-- DASHBOARD PANEL -->
-            <section class="ci-admin-panel" data-panel="dashboard">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>House Dashboard</h2>
-                  <div class="ci-panel-subtitle">
-                    Snapshot of overall casino health and recent activity.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" id="ci-dashboard-refresh-btn">
-                    Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="dashboard">
-                    Print
-                  </button>
+          <!-- Right: Player Detail -->
+          <aside class="ci-side-panel" data-player-detail>
+            <div class="ci-side-header">
+              <div class="ci-side-title-block">
+                <div class="ci-side-title">Player Details</div>
+                <div class="ci-side-sub">
+                  Select a player row to view full record and drilldowns.
                 </div>
               </div>
+            </div>
+            <div class="ci-small-note">
+              Player-centric drilldowns will search <strong>Log</strong>, <strong>Game Ledger</strong>,
+              <strong>Rewards</strong>, and <strong>Cashouts</strong> using the Player ID.
+            </div>
+          </aside>
+        </div>
+      </section>
 
-              <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;">
-                <div class="ci-kpi-row">
-                  <div class="ci-kpi-card">
-                    <div class="ci-kpi-label">Total Player Accounts</div>
-                    <div class="ci-kpi-value" id="ci-kpi-total-players">–</div>
-                    <div class="ci-kpi-note">Unique Player IDs on file.</div>
-                  </div>
-                  <div class="ci-kpi-card">
-                    <div class="ci-kpi-label">Total Chips in Wallets</div>
-                    <div class="ci-kpi-value" id="ci-kpi-total-balance">–</div>
-                    <div class="ci-kpi-note">Sum of Current Balance from Players.</div>
-                  </div>
-                  <div class="ci-kpi-card">
-                    <div class="ci-kpi-label">Open Cashout Requests (recent)</div>
-                    <div class="ci-kpi-value" id="ci-kpi-open-cashouts">–</div>
-                    <div class="ci-kpi-note">Latest entries from Cashouts sheet.</div>
-                  </div>
-                  <div class="ci-kpi-card">
-                    <div class="ci-kpi-label">High-Risk Players</div>
-                    <div class="ci-kpi-value" id="ci-kpi-high-risk">–</div>
-                    <div class="ci-kpi-note">Risk Status set to “High”.</div>
-                  </div>
-                </div>
-
-                <div class="ci-dashboard-bottom">
-                  <div class="ci-dashboard-card">
-                    <h3>VIP Snapshot</h3>
-                    <ul id="ci-dashboard-vip-list">
-                      <li>Loading VIP distribution from Players…</li>
-                    </ul>
-
-                    <div class="ci-dashboard-mini-table" id="ci-dashboard-top-players-wrap">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Player</th>
-                            <th>VIP</th>
-                            <th>Balance</th>
-                          </tr>
-                        </thead>
-                        <tbody id="ci-dashboard-top-players-body">
-                          <tr>
-                            <td colspan="3" style="text-align:center;color:var(--text-muted);">
-                              Waiting for data…
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  <div class="ci-dashboard-card">
-                    <h3>Recent Cashouts</h3>
-                    <div class="ci-dashboard-mini-table">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>When</th>
-                            <th>Player</th>
-                            <th>Requested</th>
-                            <th>Method</th>
-                          </tr>
-                        </thead>
-                        <tbody id="ci-dashboard-recent-cashouts-body">
-                          <tr>
-                            <td colspan="4" style="text-align:center;color:var(--text-muted);">
-                              Waiting for data…
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <!-- PLAYERS PANEL -->
-            <section class="ci-admin-panel" data-panel="players" id="ci-panel-players">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>Players</h2>
-                  <div class="ci-panel-subtitle">
-                    Player accounts, balances, KYC, risk, VIP &amp; self-exclusion.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" id="ci-players-refresh-btn">
-                    Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="players">
-                    Print
-                  </button>
-                </div>
-              </div>
-
-              <div class="ci-split">
-                <div class="ci-split-main">
-                  <div class="ci-toolbar">
-                    <div class="ci-toolbar-left">
-                      <div class="ci-toolbar-search-wrap">
-                        <span class="ci-toolbar-search-icon"></span>
-                        <input
-                          type="search"
-                          class="ci-input ci-toolbar-search"
-                          id="ci-players-search"
-                          placeholder="Search (Player ID, Username, Full Name, Email...)"
-                          autocomplete="off"
-                        />
-                      </div>
-                      <button type="button" class="ci-btn-ghost" id="ci-players-show-all">
-                        Show All
-                      </button>
-                    </div>
-                    <div class="ci-toolbar-right">
-                      <label>
-                        Page Size
-                        <select class="ci-select" id="ci-players-page-size">
-                          <option value="10">10</option>
-                          <option value="25" selected>25</option>
-                          <option value="50">50</option>
-                          <option value="100">100</option>
-                        </select>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div class="ci-table-wrap">
-                    <div class="ci-table-scroll">
-                      <table class="ci-table" id="ci-players-table">
-                        <thead>
-                          <tr id="ci-players-thead-row">
-                            <!-- Filled by JS -->
-                          </tr>
-                        </thead>
-                        <tbody id="ci-players-tbody">
-                          <!-- Filled by JS -->
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="ci-pagination" id="ci-players-pagination">
-                      <div>
-                        <button type="button" class="ci-btn-ghost" id="ci-players-prev-page">
-                          ◀ Prev
-                        </button>
-                        <button type="button" class="ci-btn-ghost" id="ci-players-next-page">
-                          Next ▶
-                        </button>
-                      </div>
-                      <div id="ci-players-page-info">Page 1 of 1 • 0 players</div>
-                    </div>
-                  </div>
-                </div>
-
-                <aside class="ci-split-side" id="ci-players-detail">
-                  <div class="ci-side-title">
-                    <h3>Player Details &amp; Adjustments</h3>
-                    <span class="ci-pill" id="ci-players-detail-pill">No player selected</span>
-                  </div>
-
-                  <div id="ci-players-detail-body">
-                    <div class="ci-side-callout">
-                      Select a player row from the table to view account details, change
-                      KYC / risk / VIP, or comp / adjust chips and trigger manual cashouts.
-                    </div>
-                  </div>
-                </aside>
-              </div>
-            </section>
-            <!-- LOG PANEL -->
-            <section class="ci-admin-panel" data-panel="log">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>Log</h2>
-                  <div class="ci-panel-subtitle">
-                    Player signup, login, credit, cashout and blocked_* events from the Log sheet.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" data-grid-refresh="log">
-                    Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="log">
-                    Print
-                  </button>
-                </div>
-              </div>
-
-              <div class="ci-toolbar">
-                <div class="ci-toolbar-left">
-                  <div class="ci-toolbar-search-wrap">
-                    <span class="ci-toolbar-search-icon"></span>
-                    <input
-                      type="search"
-                      class="ci-input ci-toolbar-search"
-                      placeholder="Search (Player ID, Username, Full Name, Email, Event Type...)"
-                      autocomplete="off"
-                      data-grid-search="log"
-                    />
-                  </div>
-                  <button type="button" class="ci-btn-ghost" data-grid-show-all="log">
-                    Show All
-                  </button>
-                </div>
-                <div class="ci-toolbar-right">
-                  <label>
-                    Page Size
-                    <select class="ci-select" data-grid-page-size="log">
-                      <option value="25" selected>25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              <div class="ci-table-wrap">
-                <div class="ci-table-scroll">
-                  <table class="ci-table">
-                    <thead>
-                      <tr data-grid-head="log"></tr>
-                    </thead>
-                    <tbody data-grid-body="log"></tbody>
-                  </table>
-                </div>
-                <div class="ci-pagination" data-grid-pagination="log">
-                  <div>
-                    <button type="button" class="ci-btn-ghost" data-grid-prev="log">
-                      ◀ Prev
-                    </button>
-                    <button type="button" class="ci-btn-ghost" data-grid-next="log">
-                      Next ▶
-                    </button>
-                  </div>
-                  <div data-grid-page-info="log">Page 1 of 1 • 0 rows</div>
-                </div>
-              </div>
-            </section>
-
-            <!-- GAME LEDGER PANEL -->
-            <section class="ci-admin-panel" data-panel="gameLedger">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>Game Ledger</h2>
-                  <div class="ci-panel-subtitle">
-                    Per-round game results, deltas, and balance snapshots.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" data-grid-refresh="gameLedger">
-                    Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="gameLedger">
-                    Print
-                  </button>
-                </div>
-              </div>
-
-              <div class="ci-toolbar">
-                <div class="ci-toolbar-left">
-                  <div class="ci-toolbar-search-wrap">
-                    <span class="ci-toolbar-search-icon"></span>
-                    <input
-                      type="search"
-                      class="ci-input ci-toolbar-search"
-                      placeholder="Search (Player ID, Username, Game Name, Event ID...)"
-                      autocomplete="off"
-                      data-grid-search="gameLedger"
-                    />
-                  </div>
-                  <button type="button" class="ci-btn-ghost" data-grid-show-all="gameLedger">
-                    Show All
-                  </button>
-                </div>
-                <div class="ci-toolbar-right">
-                  <label>
-                    Page Size
-                    <select class="ci-select" data-grid-page-size="gameLedger">
-                      <option value="25" selected>25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              <div class="ci-table-wrap">
-                <div class="ci-table-scroll">
-                  <table class="ci-table">
-                    <thead>
-                      <tr data-grid-head="gameLedger"></tr>
-                    </thead>
-                    <tbody data-grid-body="gameLedger"></tbody>
-                  </table>
-                </div>
-                <div class="ci-pagination" data-grid-pagination="gameLedger">
-                  <div>
-                    <button type="button" class="ci-btn-ghost" data-grid-prev="gameLedger">
-                      ◀ Prev
-                    </button>
-                    <button type="button" class="ci-btn-ghost" data-grid-next="gameLedger">
-                      Next ▶
-                    </button>
-                  </div>
-                  <div data-grid-page-info="gameLedger">Page 1 of 1 • 0 rows</div>
-                </div>
-              </div>
-            </section>
-
-            <!-- REWARDS PANEL -->
-            <section class="ci-admin-panel" data-panel="rewards">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>Rewards</h2>
-                  <div class="ci-panel-subtitle">
-                    Reward claims, bonuses, and comps recorded in the Rewards sheet.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" data-grid-refresh="rewards">
-                    Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="rewards">
-                    Print
-                  </button>
-                </div>
-              </div>
-
-              <div class="ci-toolbar">
-                <div class="ci-toolbar-left">
-                  <div class="ci-toolbar-search-wrap">
-                    <span class="ci-toolbar-search-icon"></span>
-                    <input
-                      type="search"
-                      class="ci-input ci-toolbar-search"
-                      placeholder="Search (Player ID, Username, Reward Type, Notes...)"
-                      autocomplete="off"
-                      data-grid-search="rewards"
-                    />
-                  </div>
-                  <button type="button" class="ci-btn-ghost" data-grid-show-all="rewards">
-                    Show All
-                  </button>
-                </div>
-                <div class="ci-toolbar-right">
-                  <label>
-                    Page Size
-                    <select class="ci-select" data-grid-page-size="rewards">
-                      <option value="25" selected>25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              <div class="ci-table-wrap">
-                <div class="ci-table-scroll">
-                  <table class="ci-table">
-                    <thead>
-                      <tr data-grid-head="rewards"></tr>
-                    </thead>
-                    <tbody data-grid-body="rewards"></tbody>
-                  </table>
-                </div>
-                <div class="ci-pagination" data-grid-pagination="rewards">
-                  <div>
-                    <button type="button" class="ci-btn-ghost" data-grid-prev="rewards">
-                      ◀ Prev
-                    </button>
-                    <button type="button" class="ci-btn-ghost" data-grid-next="rewards">
-                      Next ▶
-                    </button>
-                  </div>
-                  <div data-grid-page-info="rewards">Page 1 of 1 • 0 rows</div>
-                </div>
-              </div>
-            </section>
-
-            <!-- CASHOUTS PANEL -->
-            <section class="ci-admin-panel" data-panel="cashouts">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>Cashouts</h2>
-                  <div class="ci-panel-subtitle">
-                    Dedicated cashout log — requested chips, method, details.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" data-grid-refresh="cashouts">
-                    Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="cashouts">
-                    Print
-                  </button>
-                </div>
-              </div>
-
-              <div class="ci-toolbar">
-                <div class="ci-toolbar-left">
-                  <div class="ci-toolbar-search-wrap">
-                    <span class="ci-toolbar-search-icon"></span>
-                    <input
-                      type="search"
-                      class="ci-input ci-toolbar-search"
-                      placeholder="Search (Player ID, Username, Email, Method...)"
-                      autocomplete="off"
-                      data-grid-search="cashouts"
-                    />
-                  </div>
-                  <button type="button" class="ci-btn-ghost" data-grid-show-all="cashouts">
-                    Show All
-                  </button>
-                </div>
-                <div class="ci-toolbar-right">
-                  <label>
-                    Page Size
-                    <select class="ci-select" data-grid-page-size="cashouts">
-                      <option value="25" selected>25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              <div class="ci-table-wrap">
-                <div class="ci-table-scroll">
-                  <table class="ci-table">
-                    <thead>
-                      <tr data-grid-head="cashouts"></tr>
-                    </thead>
-                    <tbody data-grid-body="cashouts"></tbody>
-                  </table>
-                </div>
-                <div class="ci-pagination" data-grid-pagination="cashouts">
-                  <div>
-                    <button type="button" class="ci-btn-ghost" data-grid-prev="cashouts">
-                      ◀ Prev
-                    </button>
-                    <button type="button" class="ci-btn-ghost" data-grid-next="cashouts">
-                      Next ▶
-                    </button>
-                  </div>
-                  <div data-grid-page-info="cashouts">Page 1 of 1 • 0 rows</div>
-                </div>
-              </div>
-            </section>
-
-            <!-- STRIPE LEDGER PANEL -->
-            <section class="ci-admin-panel" data-panel="stripe">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>Stripe Ledger</h2>
-                  <div class="ci-panel-subtitle">
-                    Stripe webhook log and chip credits.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" data-grid-refresh="stripe">
-                    Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="stripe">
-                    Print
-                  </button>
-                </div>
-              </div>
-
-              <div class="ci-toolbar">
-                <div class="ci-toolbar-left">
-                  <div class="ci-toolbar-search-wrap">
-                    <span class="ci-toolbar-search-icon"></span>
-                    <input
-                      type="search"
-                      class="ci-input ci-toolbar-search"
-                      placeholder="Search (Stripe Event ID, Player ID, Email...)"
-                      autocomplete="off"
-                      data-grid-search="stripe"
-                    />
-                  </div>
-                  <button type="button" class="ci-btn-ghost" data-grid-show-all="stripe">
-                    Show All
-                  </button>
-                </div>
-                <div class="ci-toolbar-right">
-                  <label>
-                    Page Size
-                    <select class="ci-select" data-grid-page-size="stripe">
-                      <option value="25" selected>25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              <div class="ci-table-wrap">
-                <div class="ci-table-scroll">
-                  <table class="ci-table">
-                    <thead>
-                      <tr data-grid-head="stripe"></tr>
-                    </thead>
-                    <tbody data-grid-body="stripe"></tbody>
-                  </table>
-                </div>
-                <div class="ci-pagination" data-grid-pagination="stripe">
-                  <div>
-                    <button type="button" class="ci-btn-ghost" data-grid-prev="stripe">
-                      ◀ Prev
-                    </button>
-                    <button type="button" class="ci-btn-ghost" data-grid-next="stripe">
-                      Next ▶
-                    </button>
-                  </div>
-                  <div data-grid-page-info="stripe">Page 1 of 1 • 0 rows</div>
-                </div>
-              </div>
-            </section>
-
-            <!-- PAYPAL LEDGER PANEL -->
-            <section class="ci-admin-panel" data-panel="paypal">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>PayPal Ledger</h2>
-                  <div class="ci-panel-subtitle">
-                    Cashier PayPal successes and chip credits.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" data-grid-refresh="paypal">
-                    Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="paypal">
-                    Print
-                  </button>
-                </div>
-              </div>
-
-              <div class="ci-toolbar">
-                <div class="ci-toolbar-left">
-                  <div class="ci-toolbar-search-wrap">
-                    <span class="ci-toolbar-search-icon"></span>
-                    <input
-                      type="search"
-                      class="ci-input ci-toolbar-search"
-                      placeholder="Search (PayPal Txn, Player ID, Email...)"
-                      autocomplete="off"
-                      data-grid-search="paypal"
-                    />
-                  </div>
-                  <button type="button" class="ci-btn-ghost" data-grid-show-all="paypal">
-                    Show All
-                  </button>
-                </div>
-                <div class="ci-toolbar-right">
-                  <label>
-                    Page Size
-                    <select class="ci-select" data-grid-page-size="paypal">
-                      <option value="25" selected>25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              <div class="ci-table-wrap">
-                <div class="ci-table-scroll">
-                  <table class="ci-table">
-                    <thead>
-                      <tr data-grid-head="paypal"></tr>
-                    </thead>
-                    <tbody data-grid-body="paypal"></tbody>
-                  </table>
-                </div>
-                <div class="ci-pagination" data-grid-pagination="paypal">
-                  <div>
-                    <button type="button" class="ci-btn-ghost" data-grid-prev="paypal">
-                      ◀ Prev
-                    </button>
-                    <button type="button" class="ci-btn-ghost" data-grid-next="paypal">
-                      Next ▶
-                    </button>
-                  </div>
-                  <div data-grid-page-info="paypal">Page 1 of 1 • 0 rows</div>
-                </div>
-              </div>
-            </section>
-
-            <!-- BLACKLIST PANEL -->
-            <section class="ci-admin-panel" data-panel="blacklist">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>Blacklist</h2>
-                  <div class="ci-panel-subtitle">
-                    Blocked / barred players and reasons.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" data-grid-refresh="blacklist">
-                    Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="blacklist">
-                    Print
-                  </button>
-                </div>
-              </div>
-
-              <div class="ci-toolbar">
-                <div class="ci-toolbar-left">
-                  <div class="ci-toolbar-search-wrap">
-                    <span class="ci-toolbar-search-icon"></span>
-                    <input
-                      type="search"
-                      class="ci-input ci-toolbar-search"
-                      placeholder="Search (Player ID, Username, Full Name, Email, Status...)"
-                      autocomplete="off"
-                      data-grid-search="blacklist"
-                    />
-                  </div>
-                  <button type="button" class="ci-btn-ghost" data-grid-show-all="blacklist">
-                    Show All
-                  </button>
-                </div>
-                <div class="ci-toolbar-right">
-                  <label>
-                    Page Size
-                    <select class="ci-select" data-grid-page-size="blacklist">
-                      <option value="25" selected>25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              <div class="ci-table-wrap">
-                <div class="ci-table-scroll">
-                  <table class="ci-table">
-                    <thead>
-                      <tr data-grid-head="blacklist"></tr>
-                    </thead>
-                    <tbody data-grid-body="blacklist"></tbody>
-                  </table>
-                </div>
-                <div class="ci-pagination" data-grid-pagination="blacklist">
-                  <div>
-                    <button type="button" class="ci-btn-ghost" data-grid-prev="blacklist">
-                      ◀ Prev
-                    </button>
-                    <button type="button" class="ci-btn-ghost" data-grid-next="blacklist">
-                      Next ▶
-                    </button>
-                  </div>
-                  <div data-grid-page-info="blacklist">Page 1 of 1 • 0 rows</div>
-                </div>
-              </div>
-            </section>
-
-            <!-- REPORTS PANEL -->
-            <section class="ci-admin-panel" data-panel="reports">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>Reports</h2>
-                  <div class="ci-panel-subtitle">
-                    KPIs and snapshots from the Reports sheet.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" id="ci-reports-refresh-btn">
-                    Rebuild &amp; Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="reports">
-                    Print
-                  </button>
-                </div>
-              </div>
-
-              <div class="ci-toolbar">
-                <div class="ci-toolbar-left">
-                  <div class="ci-toolbar-search-wrap">
-                    <span class="ci-toolbar-search-icon"></span>
-                    <input
-                      type="search"
-                      class="ci-input ci-toolbar-search"
-                      placeholder="Search within Reports sheet…"
-                      autocomplete="off"
-                      data-grid-search="reports"
-                    />
-                  </div>
-                  <button type="button" class="ci-btn-ghost" data-grid-show-all="reports">
-                    Show All
-                  </button>
-                </div>
-                <div class="ci-toolbar-right">
-                  <label>
-                    Page Size
-                    <select class="ci-select" data-grid-page-size="reports">
-                      <option value="25" selected>25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              <div class="ci-table-wrap">
-                <div class="ci-table-scroll">
-                  <table class="ci-table">
-                    <thead>
-                      <tr data-grid-head="reports"></tr>
-                    </thead>
-                    <tbody data-grid-body="reports"></tbody>
-                  </table>
-                </div>
-                <div class="ci-pagination" data-grid-pagination="reports">
-                  <div>
-                    <button type="button" class="ci-btn-ghost" data-grid-prev="reports">
-                      ◀ Prev
-                    </button>
-                    <button type="button" class="ci-btn-ghost" data-grid-next="reports">
-                      Next ▶
-                    </button>
-                  </div>
-                  <div data-grid-page-info="reports">Page 1 of 1 • 0 rows</div>
-                </div>
-              </div>
-            </section>
-
-            <!-- ADMIN LOG PANEL -->
-            <section class="ci-admin-panel" data-panel="adminLog">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>Admin Log</h2>
-                  <div class="ci-panel-subtitle">
-                    System and admin actions recorded to the Admin Log sheet.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" data-grid-refresh="adminLog">
-                    Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="adminLog">
-                    Print
-                  </button>
-                </div>
-              </div>
-
-              <div class="ci-toolbar">
-                <div class="ci-toolbar-left">
-                  <div class="ci-toolbar-search-wrap">
-                    <span class="ci-toolbar-search-icon"></span>
-                    <input
-                      type="search"
-                      class="ci-input ci-toolbar-search"
-                      placeholder="Search (Action, Username, Details...)"
-                      autocomplete="off"
-                      data-grid-search="adminLog"
-                    />
-                  </div>
-                  <button type="button" class="ci-btn-ghost" data-grid-show-all="adminLog">
-                    Show All
-                  </button>
-                </div>
-                <div class="ci-toolbar-right">
-                  <label>
-                    Page Size
-                    <select class="ci-select" data-grid-page-size="adminLog">
-                      <option value="25" selected>25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select>
-                  </label>
-                </div>
-              </div>
-
-              <div class="ci-table-wrap">
-                <div class="ci-table-scroll">
-                  <table class="ci-table">
-                    <thead>
-                      <tr data-grid-head="adminLog"></tr>
-                    </thead>
-                    <tbody data-grid-body="adminLog"></tbody>
-                  </table>
-                </div>
-                <div class="ci-pagination" data-grid-pagination="adminLog">
-                  <div>
-                    <button type="button" class="ci-btn-ghost" data-grid-prev="adminLog">
-                      ◀ Prev
-                    </button>
-                    <button type="button" class="ci-btn-ghost" data-grid-next="adminLog">
-                      Next ▶
-                    </button>
-                  </div>
-                  <div data-grid-page-info="adminLog">Page 1 of 1 • 0 rows</div>
-                </div>
-              </div>
-            </section>
+      <!-- CASHOUTS -->
+      <section class="ci-admin-panel" data-tab-panel="cashouts">
+        <div class="ci-grid-toolbar">
+          <div class="ci-grid-toolbar-left">
+            <span class="ci-card-sub">Cashouts — Column A = Requested At, Column G = USD Equivalent.</span>
           </div>
-        </section>
-      </main>
+          <div class="ci-grid-toolbar-right">
+            <input
+              type="search"
+              class="ci-input ci-grid-search"
+              placeholder="Search (Player ID, Username, Email, Status...)"
+              data-grid-search="cashouts"
+            />
+            <button type="button" class="ci-pill-btn" data-grid-reload="cashouts">
+              Reload
+            </button>
+          </div>
+        </div>
+        <div class="ci-table-wrap" data-grid-table="cashouts">
+          <!-- JS -->
+        </div>
+        <div class="ci-small-note">
+          <strong>Status</strong> column is editable (Pending / Review / Approved / Rejected).
+          Requires backend <code>updateCell</code> + <code>rowNumbers</code> support.
+        </div>
+      </section>
 
-      <footer class="ci-admin-footer">
-        FOR INTERNAL USE ONLY
-      </footer>
-    </div>
+      <!-- REWARDS -->
+      <section class="ci-admin-panel" data-tab-panel="rewards">
+        <div class="ci-grid-toolbar">
+          <div class="ci-grid-toolbar-left">
+            <span class="ci-card-sub">Rewards redemptions & loyalty.</span>
+          </div>
+          <div class="ci-grid-toolbar-right">
+            <input
+              type="search"
+              class="ci-input ci-grid-search"
+              placeholder="Search (Player ID, Reward Type, Status...)"
+              data-grid-search="rewards"
+            />
+            <button type="button" class="ci-pill-btn" data-grid-reload="rewards">
+              Reload
+            </button>
+          </div>
+        </div>
+        <div class="ci-table-wrap" data-grid-table="rewards">
+          <!-- JS -->
+        </div>
+        <div class="ci-small-note">
+          <strong>Status</strong> is editable here as well (same <code>updateCell</code> pattern).
+        </div>
+      </section>
+
+      <!-- GAME LEDGER -->
+      <section class="ci-admin-panel" data-tab-panel="gameLedger">
+        <div class="ci-grid-toolbar">
+          <div class="ci-grid-toolbar-left">
+            <span class="ci-card-sub">Game Ledger — table rounds, wheels, races.</span>
+          </div>
+          <div class="ci-grid-toolbar-right">
+            <input
+              type="search"
+              class="ci-input ci-grid-search"
+              placeholder="Search (Player ID, Game, Round ID...)"
+              data-grid-search="gameLedger"
+            />
+            <button type="button" class="ci-pill-btn" data-grid-reload="gameLedger">
+              Reload
+            </button>
+          </div>
+        </div>
+        <div class="ci-table-wrap" data-grid-table="gameLedger">
+          <!-- JS -->
+        </div>
+      </section>
+
+      <!-- LOG -->
+      <section class="ci-admin-panel" data-tab-panel="log">
+        <div class="ci-grid-toolbar">
+          <div class="ci-grid-toolbar-left">
+            <span class="ci-card-sub">Global Log — security, login, chip events.</span>
+          </div>
+          <div class="ci-grid-toolbar-right">
+            <input
+              type="search"
+              class="ci-input ci-grid-search"
+              placeholder="Search (Player ID, Event, IP...)"
+              data-grid-search="log"
+            />
+            <button type="button" class="ci-pill-btn" data-grid-reload="log">
+              Reload
+            </button>
+          </div>
+        </div>
+        <div class="ci-table-wrap" data-grid-table="log">
+          <!-- JS -->
+        </div>
+      </section>
+
+      <!-- REPORTS -->
+      <section class="ci-admin-panel" data-tab-panel="reports">
+        <div class="ci-grid-toolbar">
+          <div class="ci-grid-toolbar-left">
+            <span class="ci-card-sub">House reports — daily net, chips in play, player activity.</span>
+          </div>
+          <div class="ci-grid-toolbar-right">
+            <div class="ci-reports-view-toggle">
+              <button type="button" class="ci-reports-view-btn is-active" data-reports-view="table">
+                Table
+              </button>
+              <button type="button" class="ci-reports-view-btn" data-reports-view="graph">
+                Graph
+              </button>
+            </div>
+            <button type="button" class="ci-pill-btn" data-reports-refresh>
+              Rebuild Reports
+            </button>
+          </div>
+        </div>
+
+        <div class="ci-table-wrap" data-grid-table="reports">
+          <!-- Table view -->
+        </div>
+
+        <div class="ci-reports-graph" data-reports-graph style="display:none;">
+          <!-- Graph view -->
+        </div>
+
+        <div class="ci-small-note">
+          Graph view renders relative bars for <strong>Total Purchased</strong>,
+          <strong>Total Cashed Out</strong>, <strong>House Net Win</strong>, and
+          <strong>Active Players</strong> using the most recent rows.
+        </div>
+      </section>
+
+      <!-- STRIPE -->
+      <section class="ci-admin-panel" data-tab-panel="stripe">
+        <div class="ci-grid-toolbar">
+          <div class="ci-grid-toolbar-left">
+            <span class="ci-card-sub">Stripe Ledger — card deposits.</span>
+          </div>
+          <div class="ci-grid-toolbar-right">
+            <input
+              type="search"
+              class="ci-input ci-grid-search"
+              placeholder="Search (Player ID, Email, Charge ID...)"
+              data-grid-search="stripe"
+            />
+            <button type="button" class="ci-pill-btn" data-grid-reload="stripe">
+              Reload
+            </button>
+          </div>
+        </div>
+        <div class="ci-table-wrap" data-grid-table="stripe">
+          <!-- JS -->
+        </div>
+      </section>
+
+      <!-- PAYPAL -->
+      <section class="ci-admin-panel" data-tab-panel="paypal">
+        <div class="ci-grid-toolbar">
+          <div class="ci-grid-toolbar-left">
+            <span class="ci-card-sub">PayPal Ledger — PayPal deposits.</span>
+          </div>
+          <div class="ci-grid-toolbar-right">
+            <input
+              type="search"
+              class="ci-input ci-grid-search"
+              placeholder="Search (Player ID, Email, Tx ID...)"
+              data-grid-search="paypal"
+            />
+            <button type="button" class="ci-pill-btn" data-grid-reload="paypal">
+              Reload
+            </button>
+          </div>
+        </div>
+        <div class="ci-table-wrap" data-grid-table="paypal">
+          <!-- JS -->
+        </div>
+      </section>
+
+      <!-- BLACKLIST -->
+      <section class="ci-admin-panel" data-tab-panel="blacklist">
+        <div class="ci-grid-toolbar">
+          <div class="ci-grid-toolbar-left">
+            <span class="ci-card-sub">Blacklist Risk — excluded and barred accounts.</span>
+          </div>
+          <div class="ci-grid-toolbar-right">
+            <input
+              type="search"
+              class="ci-input ci-grid-search"
+              placeholder="Search (Player ID, Username, Name, Notes...)"
+              data-grid-search="blacklist"
+            />
+            <button type="button" class="ci-pill-btn" data-grid-reload="blacklist">
+              Reload
+            </button>
+          </div>
+        </div>
+        <div class="ci-table-wrap" data-grid-table="blacklist">
+          <!-- JS -->
+        </div>
+        <div class="ci-small-note">
+          Use <strong>“Add to Blacklist”</strong> from Player Details to append a record here.
+          Backend must expose an <code>addToBlacklist</code> action.
+        </div>
+      </section>
+
+      <!-- ADMIN LOG -->
+      <section class="ci-admin-panel" data-tab-panel="adminlog">
+        <div class="ci-grid-toolbar">
+          <div class="ci-grid-toolbar-left">
+            <span class="ci-card-sub">Admin Log — portal actions and adjustments.</span>
+          </div>
+          <div class="ci-grid-toolbar-right">
+            <input
+              type="search"
+              class="ci-input ci-grid-search"
+              placeholder="Search (Admin, Action, Player ID...)"
+              data-grid-search="adminlog"
+            />
+            <button type="button" class="ci-pill-btn" data-grid-reload="adminlog">
+              Reload
+            </button>
+          </div>
+        </div>
+        <div class="ci-table-wrap" data-grid-table="adminlog">
+          <!-- JS -->
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="ci-admin-panel" data-tab-panel="settings">
+        <div class="ci-dashboard-grid">
+          <div class="ci-card">
+            <div class="ci-card-header">
+              <div>
+                <div class="ci-card-title">System Email Tests</div>
+                <div class="ci-card-sub">
+                  Triggers owner / player test emails from the backend.
+                </div>
+              </div>
+            </div>
+            <p class="ci-small-note">
+              Requires backend actions <code>testOwnerEmail</code> and <code>testPlayerEmail</code> wired to
+              send email via your configured Apps Script mailer.
+            </p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+              <button type="button" class="ci-btn-secondary ci-btn" data-test-owner-email>
+                Send Test Owner Email
+              </button>
+              <button type="button" class="ci-btn-secondary ci-btn" data-test-player-email>
+                Send Test Player Email
+              </button>
+            </div>
+          </div>
+
+          <div class="ci-card">
+            <div class="ci-card-header">
+              <div>
+                <div class="ci-card-title">Portal Notes</div>
+                <div class="ci-card-sub">
+                  Front-end only; sheets and backend remain the source of truth.
+                </div>
+              </div>
+            </div>
+            <ul style="margin:0 0 6px 16px;font-size:11px;color:#d1d5db;">
+              <li>Dashboard cashouts use <strong>Column A: Requested At</strong> and
+                <strong>Column G: USD Equivalent</strong>.</li>
+              <li>Cashouts & Rewards status editing uses generic <code>updateCell</code> on the underlying sheet.</li>
+              <li>Players panel shows the full row from the <strong>Players</strong> sheet (all columns).</li>
+              <li>Player drilldowns pre-fill filters on Log, Game Ledger, Rewards, and Cashouts tabs.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </main>
   </div>
 
-  <div class="ci-admin-loading" id="ci-admin-loading-overlay">
-    <div class="ci-admin-loading-inner">
-      <div class="ci-spinner"></div>
-      <div id="ci-admin-loading-text">Working…</div>
-    </div>
-  </div>
   <script>
-    "use strict";
+    (function () {
+      const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzTJ3121csJjqE3pcxYPCKT7tFgzZ68ZLn-ECBFzhrvzfx3EXZw09l3a5ePfSMwMdd2lg/exec"; // <-- backend web app URL
+      const root = document.getElementById("cookintl-admin");
+      if (!root) return;
 
-    // Web App URL (your current deployment)
-    const CI_BACKEND_URL =
-      "https://script.google.com/macros/s/AKfycbzTJ3121csJjqE3pcxYPCKT7tFgzZ68ZLn-ECBFzhrvzfx3EXZw09l3a5ePfSMwMdd2lg/exec";
+      const state = {
+        loggedIn: false,
+        adminUser: null,
+        currentTab: "dashboard",
+        grids: {},
+        selectedPlayer: null,
+      };
 
-    // Global state
-    const ciState = {
-      apiKey: null,
-      adminUser: null,
-      players: {
-        list: [],
-        filtered: [],
-        page: 1,
-        pageSize: 25,
-        sortKey: "username",
-        sortDir: "asc",
-      },
-      grids: {}, // sheet grids
-      hasLoaded: {
-        dashboard: false,
-        players: false,
-        log: false,
-        gameLedger: false,
-        adminLog: false,
-        rewards: false,
-        cashouts: false,
-        reports: false,
-        blacklist: false,
-        stripe: false,
-        paypal: false,
-      },
-    };
+      const GRID_CONFIG = {
+        players: { sheetName: "Players", limit: 500 },
+        cashouts: { sheetName: "Cashouts", limit: 500 },
+        rewards: { sheetName: "Rewards", limit: 500 },
+        gameLedger: { sheetName: "Game Ledger", limit: 500 },
+        log: { sheetName: "Log", limit: 500 },
+        reports: { sheetName: "Reports", limit: 500 },
+        stripe: { sheetName: "Stripe Ledger", limit: 500 },
+        paypal: { sheetName: "PayPal Ledger", limit: 500 },
+        blacklist: { sheetName: "Blacklist", limit: 500 },
+        adminlog: { sheetName: "Admin Log", limit: 500 },
+      };
 
-    function qs(sel, root) {
-      return (root || document).querySelector(sel);
-    }
-    function qsa(sel, root) {
-      return Array.from((root || document).querySelectorAll(sel));
-    }
-
-    function setStatus(message, isError) {
-      const strip = qs("#ci-admin-status-strip");
-      const text = qs("#ci-admin-status-text");
-      if (!strip || !text) return;
-      text.textContent = message || "";
-      strip.classList.toggle("ci-admin-status-error", !!isError);
-    }
-
-    function setLoading(isLoading, label) {
-      const overlay = qs("#ci-admin-loading-overlay");
-      const text = qs("#ci-admin-loading-text");
-      if (!overlay) return;
-      if (text && label) text.textContent = label;
-      overlay.style.display = isLoading ? "flex" : "none";
-    }
-
-    function setOnlineBadge(isOnline) {
-      const badge = qs("#ci-admin-status-badge");
-      if (!badge) return;
-      if (isOnline) {
-        badge.textContent = "Online";
-        badge.classList.add("ci-badge-online");
-      } else {
-        badge.textContent = "Offline";
-        badge.classList.remove("ci-badge-online");
-      }
-    }
-
-    function formatNumber(num) {
-      const n = Number(num);
-      if (isNaN(n)) return "0";
-      return n.toLocaleString("en-US");
-    }
-
-    function formatChips(num) {
-      const n = Number(num);
-      if (isNaN(n)) return "0";
-      return n.toLocaleString("en-US") + " chips";
-    }
-
-    function trimString(value, maxLength) {
-      const s = String(value == null ? "" : value);
-      if (!maxLength || s.length <= maxLength) return s;
-      return s.slice(0, maxLength - 1) + "…";
-    }
-
-    // Fetch helpers
-    async function postJson(url, payload) {
-      const res = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(payload || {}),
-      });
-
-      const text = await res.text();
-      try {
-        return JSON.parse(text);
-      } catch (e) {
-        console.error("Backend Error:", text);
-        throw new Error("Invalid JSON from backend");
-      }
-    }
-
-    async function getJson(url) {
-      const res = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Accept": "application/json",
-        },
-      });
-      const text = await res.text();
-      try {
-        return JSON.parse(text);
-      } catch (e) {
-        throw new Error("Invalid JSON from backend");
-      }
-    }
-
-    // Admin GET API wrapper
-    async function adminGet(action, extraParams) {
-      if (!ciState.apiKey) {
-        throw new Error("Admin API key missing");
-      }
-      const params = Object.assign({}, extraParams || {}, {
-        mode: "admin_api",
-        action: action,
-        apiKey: ciState.apiKey,
-      });
-
-      const usp = new URLSearchParams();
-      Object.keys(params).forEach(function (key) {
-        if (params[key] == null) return;
-        usp.append(key, String(params[key]));
-      });
-
-      const url = CI_BACKEND_URL + "?" + usp.toString();
-      return getJson(url);
-    }
-
-    // Helper: load Players from the Players sheet via getSheet
-    async function fetchPlayersFromSheet(maxRows) {
-      if (!ciState.apiKey) {
-        throw new Error("Admin API key missing");
-      }
-
-      const res = await adminGet("getSheet", {
-        sheetName: "Players",
-        maxRows: maxRows || 2000,
-      });
-
-      if (!res || !res.ok) {
-        throw new Error((res && res.error) || "Failed to load Players sheet");
-      }
-
-      const headers = res.headers || [];
-      const rows = res.rows || [];
-
-      const idxPlayerId = headers.indexOf("Player ID");
-      const idxUsername = headers.indexOf("Username");
-      const idxFullName = headers.indexOf("Full Name");
-      const idxEmail = headers.indexOf("Email");
-      const idxBalance = headers.indexOf("Current Balance");
-      const idxKycStatus = headers.indexOf("KYC Status");
-      const idxRiskStatus = headers.indexOf("Risk Status");
-      const idxVipLevel = headers.indexOf("VIP Level");
-      const idxFlagNotes = headers.indexOf("Flag Notes");
-
-      let idxSelfUntil = headers.indexOf("Self Excluded Until");
-      if (idxSelfUntil < 0) {
-        idxSelfUntil = headers.indexOf("Self-Excluded Until");
-      }
-      const idxSelfReason = headers.indexOf("Self Exclusion Reason");
-      const idxSelfActive = headers.indexOf("Self Exclusion Active");
-
-      const players = rows
-        .map(function (row) {
-          const player = {
-            playerId: idxPlayerId >= 0 ? row[idxPlayerId] : "",
-            username: idxUsername >= 0 ? row[idxUsername] : "",
-            fullName: idxFullName >= 0 ? row[idxFullName] : "",
-            email: idxEmail >= 0 ? row[idxEmail] : "",
-            balance:
-              idxBalance >= 0 && row[idxBalance] != null && row[idxBalance] !== ""
-                ? Number(row[idxBalance]) || 0
-                : 0,
-            kycStatus: idxKycStatus >= 0 ? row[idxKycStatus] : "",
-            riskStatus: idxRiskStatus >= 0 ? row[idxRiskStatus] : "",
-            vipLevel: idxVipLevel >= 0 ? row[idxVipLevel] : "",
-            flagNotes: idxFlagNotes >= 0 ? row[idxFlagNotes] : "",
-            selfExcludedUntil: idxSelfUntil >= 0 ? row[idxSelfUntil] : "",
-            selfExclusionReason: idxSelfReason >= 0 ? row[idxSelfReason] : "",
-            selfExclusionActive: idxSelfActive >= 0 ? row[idxSelfActive] : "",
-          };
-
-          if (!player.playerId && !player.username && !player.email) {
-            return null;
-          }
-          return player;
-        })
-        .filter(function (p) {
-          return !!p;
+      function adminPost(action, payload) {
+        const body = JSON.stringify({
+          action: action,
+          adminUser: state.adminUser || "",
+          ...(payload || {}),
         });
 
-      return players;
-    }
-
-    // Login
-    async function handleAdminLogin(event) {
-      event.preventDefault();
-      const usernameEl = qs("#ci-admin-username");
-      const passwordEl = qs("#ci-admin-password");
-      if (!usernameEl || !passwordEl) return;
-
-      const username = usernameEl.value.trim();
-      const password = passwordEl.value;
-      if (!username || !password) {
-        setStatus("Enter both username and password.", true);
-        return;
+        return fetch(WEBAPP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+        }).then((r) => r.json());
       }
 
-      setLoading(true, "Signing in…");
-      setStatus("Signing in to Admin Portal…", false);
+      function adminGet(action, params) {
+        const url = new URL(WEBAPP_URL);
+        const sp = url.searchParams;
+        sp.set("action", action);
+        if (state.adminUser) sp.set("adminUser", state.adminUser);
+        if (params) {
+          Object.keys(params).forEach((k) => {
+            if (params[k] !== undefined && params[k] !== null) {
+              sp.set(k, String(params[k]));
+            }
+          });
+        }
+        return fetch(url.toString(), { method: "GET" }).then((r) => r.json());
+      }
 
-      try {
-        const payload = {
-          mode: "admin_login",
-          username: username,
-          password: password,
-        };
-        const data = await postJson(CI_BACKEND_URL, payload);
+      function init() {
+        const loginShell = document.getElementById("ci-admin-login");
+        const mainShell = document.getElementById("ci-admin-shell");
+        const loginForm = document.getElementById("ci-login-form");
+        const loginUser = document.getElementById("ci-login-user");
+        const loginPass = document.getElementById("ci-login-pass");
+        const loginBtn = document.getElementById("ci-login-submit");
+        const loginError = document.getElementById("ci-login-error");
+        const adminUserLabel = document.getElementById("ci-admin-user-label");
 
-        if (!data || !data.ok || !data.apiKey) {
-          setStatus("Invalid credentials or admin login failed.", true);
-          setOnlineBadge(false);
-          setLoading(false);
+        const tabs = document.querySelectorAll(".ci-admin-tab");
+        const panels = document.querySelectorAll("[data-tab-panel]");
+
+        loginForm.addEventListener("submit", function (ev) {
+          ev.preventDefault();
+          const user = (loginUser.value || "").trim();
+          const pass = (loginPass.value || "").trim();
+          if (!user || !pass) return;
+
+          loginError.textContent = "";
+          loginBtn.disabled = true;
+          loginBtn.textContent = "Signing in...";
+
+          adminPost("admin_login", { username: user, password: pass })
+            .then((res) => {
+              if (!res || !res.ok) {
+                loginError.textContent =
+                  (res && res.message) || "Login failed. Check credentials.";
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Sign In";
+                return;
+              }
+              state.loggedIn = true;
+              state.adminUser = res.adminUser || user;
+
+              adminUserLabel.textContent = state.adminUser;
+              loginShell.style.display = "none";
+              mainShell.style.display = "block";
+
+              setActiveTab("dashboard");
+            })
+            .catch((err) => {
+              console.error(err);
+              loginError.textContent = "Unexpected error during login.";
+              loginBtn.disabled = false;
+              loginBtn.textContent = "Sign In";
+            });
+        });
+
+        document
+          .getElementById("ci-admin-tabs")
+          .addEventListener("click", function (ev) {
+            const btn = ev.target.closest(".ci-admin-tab");
+            if (!btn) return;
+            const tab = btn.getAttribute("data-tab");
+            if (!tab) return;
+            setActiveTab(tab);
+          });
+
+        function setActiveTab(tab) {
+          state.currentTab = tab;
+
+          tabs.forEach((t) => {
+            const isActive = t.getAttribute("data-tab") === tab;
+            t.classList.toggle("is-active", isActive);
+          });
+
+          panels.forEach((p) => {
+            const panelTab = p.getAttribute("data-tab-panel");
+            const isActive = panelTab === tab;
+            p.classList.toggle("is-active", isActive);
+          });
+
+          // Lazy-load data when tab first activated
+          if (tab === "dashboard") {
+            loadDashboard();
+          } else if (GRID_CONFIG[tab]) {
+            ensureGridLoaded(tab);
+          } else if (tab === "players") {
+            ensureGridLoaded("players");
+          }
+        }
+
+        window.setActiveTab = setActiveTab; // optional debug
+
+        /* Dash refresh */
+        document
+          .querySelector("[data-dashboard-refresh]")
+          .addEventListener("click", function () {
+            loadDashboard(true);
+          });
+
+        /* Reports view toggle */
+        document.addEventListener("click", function (ev) {
+          const viewBtn = ev.target.closest("[data-reports-view]");
+          if (viewBtn) {
+            const view = viewBtn.getAttribute("data-reports-view");
+            const all = document.querySelectorAll(".ci-reports-view-btn");
+            all.forEach((b) =>
+              b.classList.toggle(
+                "is-active",
+                b.getAttribute("data-reports-view") === view
+              )
+            );
+
+            const tableWrap = document.querySelector('[data-grid-table="reports"]');
+            const graphWrap = document.querySelector("[data-reports-graph]");
+            if (view === "graph") {
+              if (graphWrap) graphWrap.style.display = "block";
+              if (tableWrap) tableWrap.style.display = "none";
+              renderReportsGraph();
+            } else {
+              if (graphWrap) graphWrap.style.display = "none";
+              if (tableWrap) tableWrap.style.display = "block";
+            }
+          }
+
+          const refreshReportsBtn = ev.target.closest("[data-reports-refresh]");
+          if (refreshReportsBtn) {
+            refreshReportsBtn.disabled = true;
+            refreshReportsBtn.textContent = "Rebuilding...";
+            adminGet("refreshReports", {})
+              .then((res) => {
+                if (!res || !res.ok) {
+                  alert(
+                    (res && res.message) ||
+                      "Reports rebuild did not confirm; check backend."
+                  );
+                }
+                ensureGridLoaded("reports", true);
+              })
+              .catch((err) => {
+                console.error(err);
+                alert("Error calling refreshReports.");
+              })
+              .finally(() => {
+                refreshReportsBtn.disabled = false;
+                refreshReportsBtn.textContent = "Rebuild Reports";
+              });
+          }
+
+          const ownerTest = ev.target.closest("[data-test-owner-email]");
+          if (ownerTest) {
+            ownerTest.disabled = true;
+            ownerTest.textContent = "Sending...";
+            adminGet("testOwnerEmail", {})
+              .then((res) => {
+                if (!res || !res.ok) {
+                  alert(
+                    (res && res.message) ||
+                      "Backend did not confirm owner test email; check action."
+                  );
+                } else {
+                  alert("Owner test email triggered.");
+                }
+              })
+              .catch((err) => {
+                console.error(err);
+                alert(
+                  "Error calling testOwnerEmail. Backend action may not be wired yet."
+                );
+              })
+              .finally(() => {
+                ownerTest.disabled = false;
+                ownerTest.textContent = "Send Test Owner Email";
+              });
+          }
+
+          const playerTest = ev.target.closest("[data-test-player-email]");
+          if (playerTest) {
+            playerTest.disabled = true;
+            playerTest.textContent = "Sending...";
+            adminGet("testPlayerEmail", {})
+              .then((res) => {
+                if (!res || !res.ok) {
+                  alert(
+                    (res && res.message) ||
+                      "Backend did not confirm player test email; check action."
+                  );
+                } else {
+                  alert("Player test email triggered.");
+                }
+              })
+              .catch((err) => {
+                console.error(err);
+                alert(
+                  "Error calling testPlayerEmail. Backend action may not be wired yet."
+                );
+              })
+              .finally(() => {
+                playerTest.disabled = false;
+                playerTest.textContent = "Send Test Player Email";
+              });
+          }
+        });
+
+        /* Grid search / reload */
+        document.addEventListener("input", function (ev) {
+          const input = ev.target.closest(".ci-grid-search");
+          if (!input) return;
+          const key = input.getAttribute("data-grid-search");
+          if (!key || !state.grids[key]) return;
+          state.grids[key].searchTerm = (input.value || "").trim();
+          applyGridFilterAndRender(key);
+        });
+
+        document.addEventListener("click", function (ev) {
+          const reloadBtn = ev.target.closest("[data-grid-reload]");
+          if (reloadBtn) {
+            const key = reloadBtn.getAttribute("data-grid-reload");
+            if (key) ensureGridLoaded(key, true);
+          }
+        });
+
+        /* Table header sort */
+        document.addEventListener("click", function (ev) {
+          const th = ev.target.closest("th[data-grid-key]");
+          if (!th) return;
+          const key = th.getAttribute("data-grid-key");
+          const colIndex = parseInt(th.getAttribute("data-col-index") || "-1", 10);
+          if (!key || colIndex < 0 || !state.grids[key]) return;
+
+          const grid = state.grids[key];
+          const existing = grid.sortKey;
+          if (existing === colIndex) {
+            grid.sortDir = grid.sortDir === "asc" ? "desc" : "asc";
+          } else {
+            grid.sortKey = colIndex;
+            grid.sortDir = "desc";
+          }
+          applyGridFilterAndRender(key);
+        });
+
+        /* Status select (Cashouts + Rewards) */
+        document.addEventListener("change", function (ev) {
+          const select = ev.target.closest(".ci-status-select");
+          if (!select) return;
+
+          const gridKey = select.getAttribute("data-grid-key");
+          const rowIdx = parseInt(select.getAttribute("data-row-idx") || "-1", 10);
+          const colIdx = parseInt(select.getAttribute("data-col-idx") || "-1", 10);
+          const value = select.value;
+
+          if (!gridKey || rowIdx < 0 || colIdx < 0) return;
+          const grid = state.grids[gridKey];
+          if (!grid) return;
+
+          if (!grid.rowNumbers || !Array.isArray(grid.rowNumbers)) {
+            alert(
+              "Row mapping (rowNumbers) not provided by backend. Please add rowNumbers to getSheetDataForGrid response."
+            );
+            return;
+          }
+
+          const sheetRowNumber = grid.rowNumbers[rowIdx];
+          if (!sheetRowNumber) {
+            alert("Unable to determine sheet row for this record.");
+            return;
+          }
+
+          const sheetName = grid.sheetName;
+          const payload = {
+            sheetName: sheetName,
+            rowIndex: sheetRowNumber - 1,
+            colIndex: colIdx,
+            value: value,
+          };
+
+          select.disabled = true;
+
+          adminGet("updateCell", payload)
+            .then((res) => {
+              if (!res || !res.ok) {
+                alert(
+                  (res && res.message) ||
+                    "updateCell did not confirm; check backend action."
+                );
+                return;
+              }
+              grid.rows[rowIdx][colIdx] = value;
+              applyGridFilterAndRender(gridKey);
+            })
+            .catch((err) => {
+              console.error(err);
+              alert("Error calling updateCell; see console/backend.");
+            })
+            .finally(() => {
+              select.disabled = false;
+            });
+        });
+
+        /* Player row selection / drilldowns / blacklist */
+        document.addEventListener("click", function (ev) {
+          const playerRow = ev.target.closest("tr[data-grid-key='players']");
+          if (playerRow) {
+            const rowIdx = parseInt(
+              playerRow.getAttribute("data-row-idx") || "-1",
+              10
+            );
+            if (!isNaN(rowIdx) && rowIdx >= 0) {
+              selectPlayer(rowIdx);
+            }
+          }
+
+          const drillBtn = ev.target.closest("[data-player-drill]");
+          if (drillBtn) {
+            const type = drillBtn.getAttribute("data-player-drill");
+            handlePlayerDrill(type);
+          }
+
+          const addBlkBtn = ev.target.closest("[data-player-add-blacklist]");
+          if (addBlkBtn) {
+            addSelectedPlayerToBlacklist();
+          }
+        });
+
+        /* Kick things off on load by focusing login user */
+        if (loginUser) loginUser.focus();
+      }
+
+      /* DASHBOARD */
+
+      function loadDashboard(force) {
+        // KPIs driven off Reports grid if present
+        ensureGridLoaded("reports", !!force, function () {
+          renderDashboardKpis();
+        });
+        loadDashboardCashouts();
+      }
+
+      function loadDashboardCashouts() {
+        const container = document.querySelector("[data-dashboard-cashouts]");
+        if (!container) return;
+        container.textContent = "Loading recent cashouts...";
+
+        adminGet("getSheetDataForGrid", {
+          sheetKey: "cashouts",
+          sheetName: "Cashouts",
+          limit: 5,
+        })
+          .then((res) => {
+            if (!res || !res.ok) {
+              container.textContent =
+                (res && res.message) || "Unable to load cashouts.";
+              return;
+            }
+            const headers = res.headers || [];
+            const rows = res.rows || [];
+            renderDashboardCashouts(container, headers, rows);
+          })
+          .catch((err) => {
+            console.error(err);
+            container.textContent = "Error loading recent cashouts.";
+          });
+      }
+
+      function renderDashboardCashouts(container, headers, rows) {
+        const idxRequestedAt =
+          headers.indexOf("Requested At") >= 0
+            ? headers.indexOf("Requested At")
+            : headers.indexOf("Timestamp");
+        const idxUsd =
+          headers.indexOf("USD Equivalent") >= 0
+            ? headers.indexOf("USD Equivalent")
+            : headers.indexOf("Requested Chips");
+        const idxUser = headers.indexOf("Username");
+        const idxMethod = headers.indexOf("Payout Method");
+        const idxStatus = headers.indexOf("Status");
+
+        let html = '<table><thead><tr>';
+        html += "<th>When</th>";
+        html += "<th>Username</th>";
+        html += "<th>Requested</th>";
+        html += "<th>Method</th>";
+        html += "<th>Status</th>";
+        html += "</tr></thead><tbody>";
+
+        if (!rows.length) {
+          html +=
+            '<tr><td colspan="5" class="ci-muted">No recent cashouts.</td></tr>';
+        } else {
+          rows.forEach((row) => {
+            const tsVal =
+              idxRequestedAt >= 0 ? safeCell(row[idxRequestedAt]) : "";
+            const userVal = idxUser >= 0 ? safeCell(row[idxUser]) : "";
+            const usdVal = idxUsd >= 0 ? safeCell(row[idxUsd]) : "";
+            const methodVal = idxMethod >= 0 ? safeCell(row[idxMethod]) : "";
+            const statusVal = idxStatus >= 0 ? safeCell(row[idxStatus]) : "";
+
+            html += "<tr>";
+            html += "<td>" + formatShortDate(tsVal) + "</td>";
+            html += "<td>" + escapeHtml(userVal) + "</td>";
+            html += "<td>" + escapeHtml(formatUsd(usdVal)) + "</td>";
+            html += "<td>" + escapeHtml(methodVal) + "</td>";
+            html += "<td>" + escapeHtml(statusVal) + "</td>";
+            html += "</tr>";
+          });
+        }
+
+        html += "</tbody></table>";
+        container.innerHTML = html;
+      }
+
+      function renderDashboardKpis() {
+        const kpiEl = document.getElementById("ci-dashboard-kpis");
+        if (!kpiEl) return;
+        const grid = state.grids.reports;
+        if (!grid || !grid.headers || !grid.headers.length || !grid.rows.length) {
+          kpiEl.innerHTML =
+            '<div class="ci-muted">Reports snapshot not yet generated.</div>';
           return;
         }
 
-        ciState.apiKey = data.apiKey;
-        ciState.adminUser = username;
+        const headers = grid.headers;
+        const rows = grid.rows;
+        const latest = rows[0];
 
-        setOnlineBadge(true);
-        setStatus("Admin Portal unlocked. Use the tabs to navigate.", false);
+        const idxDate = headers.indexOf("Report Date");
+        const idxInPlay = headers.indexOf("Total Chips In Play");
+        const idxPurchased = headers.indexOf("Total Purchased");
+        const idxCashed = headers.indexOf("Total Cashed Out");
+        const idxNet = headers.indexOf("House Net Win (Net)");
+        const idxActive = headers.indexOf("Active Players");
 
-        const loginView = qs("#ci-admin-login-view");
-        const appView = qs("#ci-admin-app-view");
-        if (loginView) loginView.style.display = "none";
-        if (appView) appView.style.display = "flex";
+        const dateVal = idxDate >= 0 ? safeCell(latest[idxDate]) : "";
+        const inPlayVal = idxInPlay >= 0 ? safeCell(latest[idxInPlay]) : "";
+        const purchVal = idxPurchased >= 0 ? safeCell(latest[idxPurchased]) : "";
+        const cashVal = idxCashed >= 0 ? safeCell(latest[idxCashed]) : "";
+        const netVal = idxNet >= 0 ? safeCell(latest[idxNet]) : "";
+        const activeVal = idxActive >= 0 ? safeCell(latest[idxActive]) : "";
 
-        const webAppLabel = qs("#ci-admin-webapp-label");
-        if (webAppLabel) {
-          webAppLabel.textContent = "Connected";
+        kpiEl.innerHTML = `
+          <div>
+            <div class="ci-side-field-label">Report Date</div>
+            <div class="ci-side-field-value">${escapeHtml(
+              formatShortDate(dateVal)
+            )}</div>
+          </div>
+          <div>
+            <div class="ci-side-field-label">Chips In Play</div>
+            <div class="ci-side-field-value">${escapeHtml(
+              formatNumber(inPlayVal)
+            )}</div>
+          </div>
+          <div>
+            <div class="ci-side-field-label">Total Purchased (USD)</div>
+            <div class="ci-side-field-value">${escapeHtml(
+              formatUsd(purchVal)
+            )}</div>
+          </div>
+          <div>
+            <div class="ci-side-field-label">Total Cashed Out (USD)</div>
+            <div class="ci-side-field-value">${escapeHtml(
+              formatUsd(cashVal)
+            )}</div>
+          </div>
+          <div>
+            <div class="ci-side-field-label">House Net Win</div>
+            <div class="ci-side-field-value">${escapeHtml(
+              formatUsd(netVal)
+            )}</div>
+          </div>
+          <div>
+            <div class="ci-side-field-label">Active Players</div>
+            <div class="ci-side-field-value">${escapeHtml(
+              formatNumber(activeVal)
+            )}</div>
+          </div>
+        `;
+      }
+
+      /* GRIDS */
+
+      function ensureGridLoaded(key, force, callback) {
+        if (!GRID_CONFIG[key]) return;
+        const existing = state.grids[key];
+        if (existing && existing.loaded && !force) {
+          if (callback) callback();
+          if (key === "players") renderPlayersDecorations();
+          return;
         }
 
-        // Auto-switch to Dashboard
-        activateTab("dashboard");
-        await loadDashboard();
-      } catch (err) {
-        setStatus("Login error: " + String(err.message || err), true);
-        setOnlineBadge(false);
-      } finally {
-        setLoading(false);
-      }
-    }
+        const cfg = GRID_CONFIG[key];
+        const limit = cfg.limit || 500;
 
-    function resetLoginForm() {
-      const usernameEl = qs("#ci-admin-username");
-      const passwordEl = qs("#ci-admin-password");
-      if (usernameEl) usernameEl.value = "";
-      if (passwordEl) passwordEl.value = "";
-      setStatus("Enter your admin credentials to unlock the portal.", false);
-    }
-
-    // Tab handling
-    function activateTab(panelName) {
-      const tabs = qsa(".ci-admin-tab");
-      tabs.forEach(function (btn) {
-        const name = btn.getAttribute("data-tab");
-        const active = name === panelName;
-        btn.classList.toggle("ci-admin-tab-active", active);
-      });
-
-      const panels = qsa(".ci-admin-panel");
-      panels.forEach(function (panel) {
-        const name = panel.getAttribute("data-panel");
-        const active = name === panelName;
-        panel.classList.toggle("ci-admin-panel-active", active);
-      });
-
-      if (!ciState.hasLoaded[panelName]) {
-        ciState.hasLoaded[panelName] = true;
-        if (panelName === "players") {
-          loadPlayers();
-        } else if (panelName === "log") {
-          loadSheetGrid("log", "Log", 500);
-        } else if (panelName === "gameLedger") {
-          loadSheetGrid("gameLedger", "Game Ledger", 500);
-        } else if (panelName === "rewards") {
-          loadSheetGrid("rewards", "Rewards", 500);
-        } else if (panelName === "cashouts") {
-          loadSheetGrid("cashouts", "Cashouts", 500);
-        } else if (panelName === "stripe") {
-          loadSheetGrid("stripe", "Stripe Ledger", 500);
-        } else if (panelName === "paypal") {
-          loadSheetGrid("paypal", "PayPal Ledger", 500);
-        } else if (panelName === "blacklist") {
-          loadSheetGrid("blacklist", "Blacklist", 500);
-        } else if (panelName === "reports") {
-          loadReports();
-        } else if (panelName === "adminLog") {
-          loadSheetGrid("adminLog", "Admin Log", 500);
-        } else if (panelName === "dashboard") {
-          loadDashboard();
-        }
-      }
-    }
-
-    // DASHBOARD (uses getSheet for Players + Cashouts)
-    async function loadDashboard() {
-      if (!ciState.apiKey) return;
-
-      setLoading(true, "Refreshing dashboard…");
-      setStatus("Refreshing dashboard metrics…", false);
-
-      try {
-        // Players from Players sheet
-        const players = await fetchPlayersFromSheet(2000);
-        const totalPlayers = players.length;
-
-        let totalBalance = 0;
-        const vipCounts = {};
-        const topPlayers = [];
-        let highRiskCount = 0;
-
-        players.forEach(function (p) {
-          const balance = Number(p.balance || 0);
-          if (!isNaN(balance)) {
-            totalBalance += balance;
-            if (balance > 0) {
-              topPlayers.push({
-                playerId: p.playerId || "",
-                username: p.username || "",
-                vipLevel: p.vipLevel || "",
-                balance: balance,
-              });
+        adminGet("getSheetDataForGrid", {
+          sheetKey: key,
+          sheetName: cfg.sheetName,
+          limit: limit,
+        })
+          .then((res) => {
+            if (!res || !res.ok) {
+              console.error("Grid load error", key, res);
+              const tableWrap = document.querySelector(
+                '[data-grid-table="' + key + '"]'
+              );
+              if (tableWrap) {
+                tableWrap.innerHTML =
+                  '<div class="ci-muted" style="padding:8px;">Unable to load ' +
+                  escapeHtml(cfg.sheetName) +
+                  ".</div>";
+              }
+              return;
             }
+
+            const headers = res.headers || [];
+            const rows = res.rows || [];
+            const rowNumbers = res.rowNumbers || null;
+
+            state.grids[key] = {
+              key: key,
+              sheetName: cfg.sheetName,
+              loaded: true,
+              headers: headers,
+              rows: rows,
+              rowNumbers: rowNumbers,
+              sortKey: null,
+              sortDir: "desc",
+              searchTerm: "",
+            };
+
+            applyGridFilterAndRender(key);
+
+            if (key === "players") {
+              renderPlayersDecorations();
+            }
+            if (callback) callback();
+          })
+          .catch((err) => {
+            console.error("Grid load error", key, err);
+            const tableWrap = document.querySelector(
+              '[data-grid-table="' + key + '"]'
+            );
+            if (tableWrap) {
+              tableWrap.innerHTML =
+                '<div class="ci-muted" style="padding:8px;">Error loading ' +
+                escapeHtml(cfg.sheetName) +
+                ".</div>";
+            }
+          });
+      }
+
+      function applyGridFilterAndRender(key) {
+        const grid = state.grids[key];
+        if (!grid || !grid.headers) return;
+
+        const term = (grid.searchTerm || "").toLowerCase();
+        let indices = [];
+        for (let i = 0; i < grid.rows.length; i++) {
+          indices.push(i);
+        }
+
+        if (term) {
+          indices = indices.filter((idx) => {
+            const row = grid.rows[idx];
+            for (let c = 0; c < grid.headers.length; c++) {
+              const cell = row[c];
+              if (
+                cell !== null &&
+                cell !== undefined &&
+                String(cell).toLowerCase().indexOf(term) !== -1
+              ) {
+                return true;
+              }
+            }
+            return false;
+          });
+        }
+
+        if (grid.sortKey !== null && grid.sortKey >= 0) {
+          const col = grid.sortKey;
+          const dir = grid.sortDir === "asc" ? 1 : -1;
+          indices.sort((a, b) => {
+            const av = grid.rows[a][col];
+            const bv = grid.rows[b][col];
+            const na = parseFloat(av);
+            const nb = parseFloat(bv);
+            if (!isNaN(na) && !isNaN(nb)) {
+              if (na < nb) return -1 * dir;
+              if (na > nb) return 1 * dir;
+              return 0;
+            }
+            const sa = String(av || "").toLowerCase();
+            const sb = String(bv || "").toLowerCase();
+            if (sa < sb) return -1 * dir;
+            if (sa > sb) return 1 * dir;
+            return 0;
+          });
+        }
+
+        grid.filteredIndices = indices;
+        renderGrid(key);
+      }
+
+      function renderGrid(key) {
+        const grid = state.grids[key];
+        if (!grid || !grid.headers) return;
+
+        const tableWrap = document.querySelector(
+          '[data-grid-table="' + key + '"]'
+        );
+        if (!tableWrap) return;
+
+        const headers = grid.headers;
+        const indices = grid.filteredIndices || [];
+
+        let html = '<table class="ci-table"><thead><tr>';
+
+        for (let c = 0; c < headers.length; c++) {
+          const label = headers[c] || "";
+          const sorted = grid.sortKey === c;
+          const arrow = sorted ? (grid.sortDir === "asc" ? "▲" : "▼") : "";
+          html +=
+            '<th data-grid-key="' +
+            key +
+            '" data-col-index="' +
+            c +
+            '"><span class="ci-th-sort">' +
+            escapeHtml(label) +
+            (arrow
+              ? '<span class="ci-sort-indicator">' + arrow + "</span>"
+              : "") +
+            "</span></th>";
+        }
+
+        html += "</tr></thead><tbody>";
+
+        if (!indices.length) {
+          html +=
+            '<tr><td colspan="' +
+            headers.length +
+            '" class="ci-muted">No records.</td></tr>';
+        } else {
+          const isStatusEditable = key === "cashouts" || key === "rewards";
+          const statusColIndex = headers.indexOf("Status");
+
+          for (let i = 0; i < indices.length; i++) {
+            const rowIndex = indices[i];
+            const row = grid.rows[rowIndex];
+
+            const trAttrs =
+              key === "players"
+                ? ' data-grid-key="players" data-row-idx="' + rowIndex + '"'
+                : "";
+
+            html += "<tr" + trAttrs + ">";
+
+            for (let c = 0; c < headers.length; c++) {
+              const val = safeCell(row[c]);
+              if (isStatusEditable && c === statusColIndex) {
+                const options = ["Pending", "Review", "Approved", "Rejected"];
+                const current = val || "Pending";
+                html += "<td>";
+                html +=
+                  '<select class="ci-status-select" data-grid-key="' +
+                  key +
+                  '" data-row-idx="' +
+                  rowIndex +
+                  '" data-col-idx="' +
+                  c +
+                  '">';
+                options.forEach((opt) => {
+                  const selected =
+                    String(opt).toLowerCase() ===
+                    String(current).toLowerCase()
+                      ? ' selected="selected"'
+                      : "";
+                  html +=
+                    '<option value="' +
+                    escapeHtml(opt) +
+                    '"' +
+                    selected +
+                    ">" +
+                    escapeHtml(opt) +
+                    "</option>";
+                });
+                html += "</select>";
+                html += "</td>";
+              } else if (key === "cashouts") {
+                // Format USD Equivalent nicely in Cashouts
+                if (headers[c] === "USD Equivalent") {
+                  html += "<td>" + escapeHtml(formatUsd(val)) + "</td>";
+                } else {
+                  html += "<td>" + escapeHtml(String(val)) + "</td>";
+                }
+              } else {
+                html += "<td>" + escapeHtml(String(val)) + "</td>";
+              }
+            }
+
+            html += "</tr>";
           }
+        }
 
-          const vip = (p.vipLevel || "").toString() || "None";
-          vipCounts[vip] = (vipCounts[vip] || 0) + 1;
+        html += "</tbody></table>";
+        tableWrap.innerHTML = html;
+      }
 
-          const risk = (p.riskStatus || "").toString().toLowerCase();
-          if (risk === "high") {
-            highRiskCount++;
+      /* PLAYERS DETAIL + DRILLDOWNS */
+
+      function renderPlayersDecorations() {
+        // could add extra styling or logic; currently handled by row click + detail
+      }
+
+      function selectPlayer(rowIndex) {
+        const grid = state.grids.players;
+        if (!grid || !grid.rows[rowIndex]) return;
+
+        const row = grid.rows[rowIndex];
+        const headers = grid.headers;
+        const fields = {};
+        for (let i = 0; i < headers.length; i++) {
+          fields[headers[i] || "Col" + (i + 1)] = safeCell(row[i]);
+        }
+
+        state.selectedPlayer = {
+          rowIndex: rowIndex,
+          sheetRow: grid.rowNumbers ? grid.rowNumbers[rowIndex] : null,
+          headers: headers.slice(),
+          row: row.slice(),
+          fields: fields,
+        };
+
+        renderPlayerDetail();
+      }
+
+      function renderPlayerDetail() {
+        const container = document.querySelector("[data-player-detail]");
+        if (!container) return;
+
+        const player = state.selectedPlayer;
+        if (!player) {
+          container.innerHTML = `
+            <div class="ci-side-header">
+              <div class="ci-side-title-block">
+                <div class="ci-side-title">Player Details</div>
+                <div class="ci-side-sub">
+                  Select a player row from the grid to view full details and drilldowns.
+                </div>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        const f = player.fields;
+        const playerId =
+          f["Player ID"] || f["PlayerID"] || f["ID"] || f["Username"] || "";
+        const username = f["Username"] || "";
+        const fullName = f["Full Name"] || f["Legal Name"] || "";
+        const email = f["Email"] || "";
+        const kyc = f["KYC Status"] || "";
+        const risk = f["Risk Status"] || "";
+        const vip = f["VIP Level"] || "";
+        const flags = f["Flag Notes"] || "";
+        const selfUntil = f["Self-Exclusion Until"] || "";
+        const selfReason = f["Self-Exclusion Reason"] || "";
+        const selfActive = f["Self-Exclusion Active"] || "";
+        const balance =
+          f["Current Balance"] ||
+          f["Balance"] ||
+          f["Chip Balance"] ||
+          f["Total Chips"] ||
+          "";
+
+        let fullRecordHtml = "";
+        player.headers.forEach((h, idx) => {
+          const label = h || "Col " + (idx + 1);
+          const val = safeCell(player.row[idx]);
+          if (val === "" && label.toLowerCase().indexOf("notes") === -1) {
+            return;
+          }
+          fullRecordHtml += `
+            <div class="ci-side-full-record-row">
+              <div class="ci-side-full-record-label">${escapeHtml(label)}</div>
+              <div class="ci-side-full-record-value">${escapeHtml(
+                String(val)
+              )}</div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = `
+          <div class="ci-side-header">
+            <div class="ci-side-title-block">
+              <div class="ci-side-title">
+                ${escapeHtml(username || fullName || playerId || "Player")}
+              </div>
+              <div class="ci-side-sub">
+                Player ID: ${escapeHtml(playerId || "N/A")} · Email: ${escapeHtml(
+          email || "N/A"
+        )}
+              </div>
+            </div>
+            <div class="ci-side-actions">
+              <button type="button" class="ci-side-pill" data-player-drill="log">
+                Log
+              </button>
+              <button type="button" class="ci-side-pill" data-player-drill="ledger">
+                Game Ledger
+              </button>
+              <button type="button" class="ci-side-pill" data-player-drill="rewards">
+                Rewards
+              </button>
+              <button type="button" class="ci-side-pill" data-player-drill="cashouts">
+                Cashouts
+              </button>
+              <button type="button" class="ci-side-pill" data-player-add-blacklist>
+                Add to Blacklist
+              </button>
+            </div>
+          </div>
+
+          <div class="ci-side-section">
+            <h4>Account</h4>
+            <div class="ci-side-grid">
+              <div>
+                <div class="ci-side-field-label">Player ID</div>
+                <div class="ci-side-field-value">${escapeHtml(playerId)}</div>
+              </div>
+              <div>
+                <div class="ci-side-field-label">Username</div>
+                <div class="ci-side-field-value">${escapeHtml(username)}</div>
+              </div>
+              <div>
+                <div class="ci-side-field-label">Full / Legal Name</div>
+                <div class="ci-side-field-value">${escapeHtml(fullName)}</div>
+              </div>
+              <div>
+                <div class="ci-side-field-label">Email</div>
+                <div class="ci-side-field-value">${escapeHtml(email)}</div>
+              </div>
+              <div>
+                <div class="ci-side-field-label">Current Balance (chips)</div>
+                <div class="ci-side-field-value">${escapeHtml(
+                  formatNumber(balance)
+                )}</div>
+              </div>
+              <div>
+                <div class="ci-side-field-label">Flags / Notes</div>
+                <div class="ci-side-field-value">${escapeHtml(flags)}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ci-side-section">
+            <h4>KYC · Risk · VIP</h4>
+            <div class="ci-side-grid">
+              <div>
+                <div class="ci-side-field-label">KYC Status</div>
+                <div class="ci-side-field-value">${escapeHtml(kyc)}</div>
+              </div>
+              <div>
+                <div class="ci-side-field-label">Risk Status</div>
+                <div class="ci-side-field-value">${escapeHtml(risk)}</div>
+              </div>
+              <div>
+                <div class="ci-side-field-label">VIP Level</div>
+                <div class="ci-side-field-value">${escapeHtml(vip)}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ci-side-section">
+            <h4>Self-Exclusion</h4>
+            <div class="ci-side-grid">
+              <div>
+                <div class="ci-side-field-label">Active</div>
+                <div class="ci-side-field-value">${escapeHtml(
+                  selfActive || "No"
+                )}</div>
+              </div>
+              <div>
+                <div class="ci-side-field-label">Until</div>
+                <div class="ci-side-field-value">${escapeHtml(
+                  formatShortDate(selfUntil)
+                )}</div>
+              </div>
+              <div>
+                <div class="ci-side-field-label">Reason</div>
+                <div class="ci-side-field-value">${escapeHtml(
+                  selfReason || "-"
+                )}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ci-side-section ci-side-full-record">
+            <h4>Full Player Record</h4>
+            ${fullRecordHtml || '<div class="ci-muted">No additional fields.</div>'}
+          </div>
+        `;
+      }
+
+      function handlePlayerDrill(type) {
+        const player = state.selectedPlayer;
+        if (!player) return;
+
+        const f = player.fields;
+        const pid =
+          f["Player ID"] || f["PlayerID"] || f["Username"] || f["Email"] || "";
+        if (!pid) return;
+
+        let tabKey = null;
+        let gridKey = null;
+
+        if (type === "log") {
+          tabKey = "log";
+          gridKey = "log";
+        } else if (type === "ledger") {
+          tabKey = "gameLedger";
+          gridKey = "gameLedger";
+        } else if (type === "rewards") {
+          tabKey = "rewards";
+          gridKey = "rewards";
+        } else if (type === "cashouts") {
+          tabKey = "cashouts";
+          gridKey = "cashouts";
+        }
+
+        if (!tabKey || !gridKey) return;
+
+        if (window.setActiveTab) {
+          window.setActiveTab(tabKey);
+        }
+
+        ensureGridLoaded(gridKey, false, function () {
+          const searchInput = document.querySelector(
+            '[data-grid-search="' + gridKey + '"]'
+          );
+          if (searchInput) {
+            searchInput.value = pid;
+          }
+          if (state.grids[gridKey]) {
+            state.grids[gridKey].searchTerm = pid;
+            applyGridFilterAndRender(gridKey);
           }
         });
+      }
 
-        topPlayers.sort(function (a, b) {
-          return b.balance - a.balance;
+      function addSelectedPlayerToBlacklist() {
+        const player = state.selectedPlayer;
+        if (!player) return;
+        const f = player.fields;
+
+        const username = f["Username"] || "";
+        const legalName = f["Full Name"] || f["Legal Name"] || "";
+        const email = f["Email"] || "";
+        const playerId =
+          f["Player ID"] || f["PlayerID"] || f["ID"] || f["Username"] || "";
+
+        const label =
+          legalName || username || playerId || email || "this player";
+
+        if (
+          !confirm(
+            "Add " +
+              label +
+              " to the Blacklist sheet? (Requires backend addToBlacklist action.)"
+          )
+        ) {
+          return;
+        }
+
+        adminPost("addToBlacklist", {
+          username: username,
+          legalName: legalName,
+          playerId: playerId,
+          email: email,
+        })
+          .then((res) => {
+            if (!res || !res.ok) {
+              alert(
+                (res && res.message) ||
+                  "Backend did not confirm addToBlacklist; check action."
+              );
+              return;
+            }
+            alert("Player added to Blacklist.");
+            ensureGridLoaded("blacklist", true);
+          })
+          .catch((err) => {
+            console.error(err);
+            alert(
+              "Error calling addToBlacklist. Backend action may not be wired yet."
+            );
+          });
+      }
+
+      /* REPORTS GRAPH */
+
+      function renderReportsGraph() {
+        const wrap = document.querySelector("[data-reports-graph]");
+        if (!wrap) return;
+        const grid = state.grids.reports;
+        if (!grid || !grid.headers || !grid.headers.length || !grid.rows.length) {
+          wrap.innerHTML =
+            '<div class="ci-muted">No report rows available for graph.</div>';
+          return;
+        }
+
+        const headers = grid.headers;
+        const rows = grid.rows.slice(0, 30);
+
+        const idxDate = headers.indexOf("Report Date");
+        const idxPurchased = headers.indexOf("Total Purchased");
+        const idxCashed = headers.indexOf("Total Cashed Out");
+        const idxNet = headers.indexOf("House Net Win (Net)");
+        const idxActive = headers.indexOf("Active Players");
+
+        let maxAbs = 0;
+        rows.forEach((row) => {
+          const p = parseFloat(row[idxPurchased] || 0);
+          const c = parseFloat(row[idxCashed] || 0);
+          const n = parseFloat(row[idxNet] || 0);
+          const a = parseFloat(row[idxActive] || 0);
+          maxAbs = Math.max(
+            maxAbs,
+            Math.abs(p) || 0,
+            Math.abs(c) || 0,
+            Math.abs(n) || 0,
+            Math.abs(a) || 0
+          );
+        });
+        if (!maxAbs || !isFinite(maxAbs)) maxAbs = 1;
+
+        let html = "";
+
+        rows.forEach((row) => {
+          const dateVal = idxDate >= 0 ? safeCell(row[idxDate]) : "";
+          const p = parseFloat(row[idxPurchased] || 0) || 0;
+          const c = parseFloat(row[idxCashed] || 0) || 0;
+          const n = parseFloat(row[idxNet] || 0) || 0;
+          const a = parseFloat(row[idxActive] || 0) || 0;
+
+          const pWidth = Math.max(4, (Math.abs(p) / maxAbs) * 100);
+          const cWidth = Math.max(4, (Math.abs(c) / maxAbs) * 100);
+          const nWidth = Math.max(4, (Math.abs(n) / maxAbs) * 100);
+          const aWidth = Math.max(4, (Math.abs(a) / maxAbs) * 100);
+
+          html += `
+            <div class="ci-kpi-row">
+              <div class="ci-kpi-label">${escapeHtml(
+                formatShortDate(dateVal)
+              )}</div>
+              <div class="ci-kpi-bars">
+                <div class="ci-kpi-bar" style="width:${pWidth}%;"></div>
+                <div class="ci-kpi-bar ci-kpi-bar-secondary" style="width:${cWidth}%;"></div>
+                <div class="ci-kpi-bar ci-kpi-bar-tertiary" style="width:${nWidth}%;"></div>
+              </div>
+              <div class="ci-kpi-legend">
+                <span><span class="ci-kpi-dot ci-kpi-dot-primary"></span>Purchased: ${escapeHtml(
+                  formatUsd(p)
+                )}</span>
+                <span><span class="ci-kpi-dot ci-kpi-dot-secondary"></span>Cashed Out: ${escapeHtml(
+                  formatUsd(c)
+                )}</span>
+                <span><span class="ci-kpi-dot ci-kpi-dot-tertiary"></span>Net: ${escapeHtml(
+                  formatUsd(n)
+                )}</span>
+                ${
+                  isNaN(a)
+                    ? ""
+                    : `<span><span class="ci-kpi-dot ci-kpi-dot-primary"></span>Active: ${escapeHtml(
+                        formatNumber(a)
+                      )}</span>`
+                }
+              </div>
+            </div>
+          `;
         });
 
-        // Cashouts from Cashouts sheet
-        const cashRes = await adminGet("getSheet", {
-          sheetName: "Cashouts",
-          maxRows: 200,
-        });
+        wrap.innerHTML = html || '<div class="ci-muted">No rows to graph.</div>';
+      }
 
-        if (!cashRes || !cashRes.ok) {
-          throw new Error(
-            (cashRes && cashRes.error) || "Failed to load Cashouts sheet"
+      /* HELPERS */
+
+      function safeCell(v) {
+        if (v === null || v === undefined) return "";
+        return v;
+      }
+
+      function escapeHtml(str) {
+        str = String(str === null || str === undefined ? "" : str);
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function formatNumber(val) {
+        if (val === null || val === undefined || val === "") return "";
+        const n = Number(val);
+        if (!isNaN(n)) {
+          return n.toLocaleString("en-US", {
+            maximumFractionDigits: 2,
+          });
+        }
+        return val;
+      }
+
+      function formatUsd(val) {
+        if (val === null || val === undefined || val === "") return "$0.00";
+        const n = Number(val);
+        if (!isNaN(n)) {
+          return (
+            "$" +
+            n.toLocaleString("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
           );
         }
+        const s = String(val).trim();
+        if (!s) return "$0.00";
+        if (s[0] === "$") return s;
+        return "$" + s;
+      }
 
-        const cashHeaders = cashRes.headers || [];
-        const cashRows = cashRes.rows || [];
-
-        const idxTs = cashHeaders.indexOf("Timestamp");
-        const idxPid = cashHeaders.indexOf("Player ID");
-        const idxUser = cashHeaders.indexOf("Username");
-        const idxEmail = cashHeaders.indexOf("Email");
-        const idxReq = cashHeaders.indexOf("Requested Chips");
-        const idxMethod = cashHeaders.indexOf("Payout Method");
-
-        // KPI cards
-        const elTotalPlayers = qs("#ci-kpi-total-players");
-        const elTotalBalance = qs("#ci-kpi-total-balance");
-        const elOpenCashouts = qs("#ci-kpi-open-cashouts");
-        const elHighRisk = qs("#ci-kpi-high-risk");
-
-        if (elTotalPlayers) elTotalPlayers.textContent = formatNumber(totalPlayers);
-        if (elTotalBalance) elTotalBalance.textContent = formatChips(totalBalance);
-        if (elHighRisk) elHighRisk.textContent = formatNumber(highRiskCount);
-
-        const openCashouts = cashRows.length;
-        if (elOpenCashouts) elOpenCashouts.textContent = formatNumber(openCashouts);
-
-        // VIP snapshot
-        const vipList = qs("#ci-dashboard-vip-list");
-        if (vipList) {
-          vipList.innerHTML = "";
-          const vipKeys = Object.keys(vipCounts);
-          if (!vipKeys.length) {
-            const li = document.createElement("li");
-            li.textContent = "No VIP levels recorded yet.";
-            vipList.appendChild(li);
-          } else {
-            vipKeys.sort();
-            vipKeys.forEach(function (vip) {
-              const li = document.createElement("li");
-              li.textContent =
-                vip + ": " + formatNumber(vipCounts[vip]) + " players";
-              vipList.appendChild(li);
+      function formatShortDate(val) {
+        if (!val) return "";
+        // If it's already a nice string, just return it
+        if (typeof val === "string") {
+          return val;
+        }
+        try {
+          const d = new Date(val);
+          if (!isNaN(d.getTime())) {
+            return d.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
             });
           }
+        } catch (e) {
+          // ignore
         }
-
-        // Top players by balance
-        const topBody = qs("#ci-dashboard-top-players-body");
-        if (topBody) {
-          topBody.innerHTML = "";
-          const maxTop = Math.min(10, topPlayers.length);
-          if (maxTop === 0) {
-            const tr = document.createElement("tr");
-            const td = document.createElement("td");
-            td.colSpan = 3;
-            td.style.textAlign = "center";
-            td.style.color = "var(--text-muted)";
-            td.textContent = "No positive balances yet.";
-            tr.appendChild(td);
-            topBody.appendChild(tr);
-          } else {
-            for (let i = 0; i < maxTop; i++) {
-              const p = topPlayers[i];
-              const tr = document.createElement("tr");
-
-              const tdName = document.createElement("td");
-              tdName.textContent = trimString(
-                p.username || p.playerId || "(Player)",
-                24
-              );
-
-              const tdVip = document.createElement("td");
-              tdVip.textContent = p.vipLevel || "—";
-
-              const tdBal = document.createElement("td");
-              tdBal.textContent = formatNumber(p.balance);
-
-              tr.appendChild(tdName);
-              tr.appendChild(tdVip);
-              tr.appendChild(tdBal);
-              topBody.appendChild(tr);
-            }
-          }
-        }
-
-        // Recent cashouts table
-        const cashBody = qs("#ci-dashboard-recent-cashouts-body");
-        if (cashBody) {
-          cashBody.innerHTML = "";
-          const maxRows = Math.min(10, cashRows.length);
-          if (!maxRows) {
-            const tr = document.createElement("tr");
-            const td = document.createElement("td");
-            td.colSpan = 4;
-            td.style.textAlign = "center";
-            td.style.color = "var(--text-muted)";
-            td.textContent = "No recent cashouts.";
-            tr.appendChild(td);
-            cashBody.appendChild(tr);
-          } else {
-            for (let i = 0; i < maxRows; i++) {
-              const row = cashRows[cashRows.length - 1 - i];
-              const tr = document.createElement("tr");
-
-              const tsVal = idxTs >= 0 ? row[idxTs] : "";
-              const pidVal = idxPid >= 0 ? row[idxPid] : "";
-              const userVal = idxUser >= 0 ? row[idxUser] : "";
-              const emailVal = idxEmail >= 0 ? row[idxEmail] : "";
-              const reqVal = idxReq >= 0 ? row[idxReq] : "";
-              const methodVal = idxMethod >= 0 ? row[idxMethod] : "";
-
-              const playerLabel =
-                (userVal || "").toString() ||
-                (pidVal || "").toString() ||
-                (emailVal || "").toString();
-
-              const tdTs = document.createElement("td");
-              tdTs.textContent = tsVal ? new Date(tsVal).toLocaleString() : "—";
-
-              const tdPlayer = document.createElement("td");
-              tdPlayer.textContent = trimString(playerLabel, 28);
-
-              const tdReq = document.createElement("td");
-              tdReq.textContent = formatNumber(reqVal);
-
-              const tdMethod = document.createElement("td");
-              tdMethod.textContent = trimString(methodVal || "—", 18);
-
-              tr.appendChild(tdTs);
-              tr.appendChild(tdPlayer);
-              tr.appendChild(tdReq);
-              tr.appendChild(tdMethod);
-              cashBody.appendChild(tr);
-            }
-          }
-        }
-
-        setStatus("House Dashboard", false);
-      } catch (err) {
-        setStatus("Dashboard refresh failed: " + String(err.message || err), true);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    // SHEET GRID HANDLING (Log, Game Ledger, Rewards, Cashouts, Stripe, PayPal, Blacklist, Reports, Admin Log)
-    function createSheetGrid(name, options) {
-      return {
-        name: name,
-        headers: [],
-        rows: [],
-        filteredIndexes: [],
-        page: 1,
-        pageSize: (options && options.pageSize) || 25,
-        sortIndex: 0,
-        sortDir: "desc",
-        maxRows: (options && options.maxRows) || 500,
-      };
-    }
-
-    function initSheetGrids() {
-      ciState.grids.log = createSheetGrid("log", { pageSize: 25, maxRows: 500 });
-      ciState.grids.gameLedger = createSheetGrid("gameLedger", {
-        pageSize: 25,
-        maxRows: 500,
-      });
-      ciState.grids.rewards = createSheetGrid("rewards", {
-        pageSize: 25,
-        maxRows: 500,
-      });
-      ciState.grids.cashouts = createSheetGrid("cashouts", {
-        pageSize: 25,
-        maxRows: 500,
-      });
-      ciState.grids.stripe = createSheetGrid("stripe", {
-        pageSize: 25,
-        maxRows: 500,
-      });
-      ciState.grids.paypal = createSheetGrid("paypal", {
-        pageSize: 25,
-        maxRows: 500,
-      });
-      ciState.grids.blacklist = createSheetGrid("blacklist", {
-        pageSize: 25,
-        maxRows: 500,
-      });
-      ciState.grids.reports = createSheetGrid("reports", {
-        pageSize: 25,
-        maxRows: 500,
-      });
-      ciState.grids.adminLog = createSheetGrid("adminLog", {
-        pageSize: 25,
-        maxRows: 500,
-      });
-    }
-
-    function getSheetNameForGrid(gridName) {
-      switch (gridName) {
-        case "log":
-          return "Log";
-        case "gameLedger":
-          return "Game Ledger";
-        case "rewards":
-          return "Rewards";
-        case "cashouts":
-          return "Cashouts";
-        case "stripe":
-          return "Stripe Ledger";
-        case "paypal":
-          return "PayPal Ledger";
-        case "blacklist":
-          return "Blacklist";
-        case "reports":
-          return "Reports";
-        case "adminLog":
-          return "Admin Log";
-        default:
-          return "";
-      }
-    }
-
-    async function loadSheetGrid(gridName, sheetNameOverride, maxRowsOverride) {
-      const grid = ciState.grids[gridName];
-      if (!grid) return;
-      const sheetName = sheetNameOverride || getSheetNameForGrid(gridName);
-      if (!sheetName) return;
-
-      const maxRows = maxRowsOverride || grid.maxRows;
-
-      setLoading(true, "Loading " + sheetName + "…");
-      setStatus("Loading " + sheetName + "…", false);
-
-      try {
-        const res = await adminGet("getSheet", {
-          sheetName: sheetName,
-          maxRows: maxRows,
-        });
-
-        if (!res || !res.ok) {
-          throw new Error((res && res.error) || "Unknown error");
-        }
-
-        grid.headers = res.headers || [];
-        grid.rows = res.rows || [];
-
-        grid.sortIndex = 0;
-        grid.sortDir = "desc";
-        grid.page = 1;
-
-        applyGridFilterAndRender(gridName);
-        setStatus(sheetName + " updated.", false);
-      } catch (err) {
-        setStatus(
-          "Failed to load " + sheetName + ": " + String(err.message || err),
-          true
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    function applyGridFilterAndRender(gridName) {
-      const grid = ciState.grids[gridName];
-      if (!grid) return;
-
-      const searchInput = qs('[data-grid-search="' + gridName + '"]');
-      const searchTerm = searchInput
-        ? searchInput.value.trim().toLowerCase()
-        : "";
-
-      const rows = grid.rows || [];
-      const indexes = [];
-
-      for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        if (!searchTerm) {
-          indexes.push(i);
-          continue;
-        }
-        let match = false;
-        for (let c = 0; c < row.length; c++) {
-          const cell = row[c];
-          if (cell == null) continue;
-          const s = String(cell).toLowerCase();
-          if (!s) continue;
-          if (s.indexOf(searchTerm) !== -1) {
-            match = true;
-            break;
-          }
-        }
-        if (match) indexes.push(i);
+        return String(val);
       }
 
-      grid.filteredIndexes = indexes;
-
-      const totalPages = Math.max(
-        1,
-        Math.ceil(indexes.length / grid.pageSize || 1)
-      );
-      if (grid.page > totalPages) grid.page = totalPages;
-      if (grid.page < 1) grid.page = 1;
-
-      const si = grid.sortIndex;
-      const dir = grid.sortDir === "asc" ? 1 : -1;
-      grid.filteredIndexes.sort(function (aIdx, bIdx) {
-        const aRow = rows[aIdx] || [];
-        const bRow = rows[bIdx] || [];
-        const aVal = aRow[si];
-        const bVal = bRow[si];
-
-        const aNum = Number(aVal);
-        const bNum = Number(bVal);
-        let cmp;
-        if (!isNaN(aNum) && !isNaN(bNum)) {
-          cmp = aNum - bNum;
-        } else {
-          const aStr =
-            aVal == null ? "" : String(aVal).toLowerCase().trim();
-          const bStr =
-            bVal == null ? "" : String(bVal).toLowerCase().trim();
-          cmp = aStr < bStr ? -1 : aStr > bStr ? 1 : 0;
-        }
-        return cmp * dir;
-      });
-
-      renderGrid(gridName);
-    }
-
-    function renderGrid(gridName) {
-      const grid = ciState.grids[gridName];
-      if (!grid) return;
-
-      const headRow = qs('[data-grid-head="' + gridName + '"]');
-      const bodyEl = qs('[data-grid-body="' + gridName + '"]');
-      const pageInfoEl = qs(
-        '[data-grid-page-info="' + gridName + '"]'
-      );
-
-      if (!headRow || !bodyEl || !pageInfoEl) return;
-
-      const headers = grid.headers || [];
-      const rows = grid.rows || [];
-      const indexes = grid.filteredIndexes || [];
-
-      headRow.innerHTML = "";
-      headers.forEach(function (header, idx) {
-        const th = document.createElement("th");
-        th.textContent = header || "";
-        th.dataset.index = String(idx);
-        th.dataset.sortable = "true";
-
-        if (idx === grid.sortIndex) {
-          const span = document.createElement("span");
-          span.className = "ci-sort-indicator";
-          span.textContent = grid.sortDir === "asc" ? "▲" : "▼";
-          th.appendChild(span);
-        }
-
-        headRow.appendChild(th);
-      });
-
-      const pageSize = grid.pageSize;
-      const totalRows = indexes.length;
-      const totalPages = Math.max(
-        1,
-        Math.ceil(totalRows / (pageSize || 1))
-      );
-      const currentPage = Math.min(Math.max(grid.page, 1), totalPages);
-      grid.page = currentPage;
-
-      const start = (currentPage - 1) * pageSize;
-      const end = Math.min(start + pageSize, totalRows);
-
-      bodyEl.innerHTML = "";
-
-      if (!totalRows) {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.colSpan = Math.max(headers.length, 1);
-        td.style.textAlign = "center";
-        td.style.color = "var(--text-muted)";
-        td.textContent = "No rows to display.";
-        tr.appendChild(td);
-        bodyEl.appendChild(tr);
-      } else {
-        for (let i = start; i < end; i++) {
-          const rowIdx = indexes[i];
-          const row = rows[rowIdx] || [];
-          const tr = document.createElement("tr");
-
-          row.forEach(function (cell) {
-            const td = document.createElement("td");
-            td.textContent = cell == null ? "" : String(cell);
-            tr.appendChild(td);
-          });
-
-          bodyEl.appendChild(tr);
-        }
-      }
-
-      pageInfoEl.textContent =
-        "Page " +
-        currentPage +
-        " of " +
-        totalPages +
-        " • " +
-        formatNumber(totalRows) +
-        " rows";
-    }
-
-    function handleGridSortClick(event) {
-      const th = event.target.closest("th");
-      if (!th || !th.dataset || !th.dataset.index) return;
-
-      const headRow = th.parentElement;
-      if (!headRow) return;
-
-      const gridNames = [
-        "log",
-        "gameLedger",
-        "rewards",
-        "cashouts",
-        "stripe",
-        "paypal",
-        "blacklist",
-        "reports",
-        "adminLog",
-      ];
-      let gridName = null;
-      for (let i = 0; i < gridNames.length; i++) {
-        const name = gridNames[i];
-        if (headRow.matches('[data-grid-head="' + name + '"]')) {
-          gridName = name;
-          break;
-        }
-      }
-      if (!gridName) return;
-
-      const grid = ciState.grids[gridName];
-      if (!grid) return;
-
-      const idx = Number(th.dataset.index);
-      if (isNaN(idx)) return;
-
-      if (grid.sortIndex === idx) {
-        grid.sortDir = grid.sortDir === "asc" ? "desc" : "asc";
-      } else {
-        grid.sortIndex = idx;
-        grid.sortDir = "asc";
-      }
-
-      applyGridFilterAndRender(gridName);
-    }
-
-    function attachGridDomHandlers() {
-      qsa("tr[data-grid-head]").forEach(function (headRow) {
-        headRow.addEventListener("click", handleGridSortClick);
-      });
-
-      qsa("[data-grid-search]").forEach(function (input) {
-        const gridName = input.getAttribute("data-grid-search");
-        input.addEventListener("input", function () {
-          const grid = ciState.grids[gridName];
-          if (!grid) return;
-          grid.page = 1;
-          applyGridFilterAndRender(gridName);
-        });
-      });
-
-      qsa("[data-grid-show-all]").forEach(function (btn) {
-        const gridName = btn.getAttribute("data-grid-show-all");
-        btn.addEventListener("click", function () {
-          const input = qs('[data-grid-search="' + gridName + '"]');
-          if (input) input.value = "";
-          const grid = ciState.grids[gridName];
-          if (!grid) return;
-          grid.page = 1;
-          applyGridFilterAndRender(gridName);
-        });
-      });
-
-      qsa("[data-grid-page-size]").forEach(function (sel) {
-        const gridName = sel.getAttribute("data-grid-page-size");
-        sel.addEventListener("change", function () {
-          const grid = ciState.grids[gridName];
-          if (!grid) return;
-          const val = Number(sel.value);
-          if (!isNaN(val) && val > 0) {
-            grid.pageSize = val;
-            grid.page = 1;
-            applyGridFilterAndRender(gridName);
-          }
-        });
-      });
-
-      qsa("[data-grid-prev]").forEach(function (btn) {
-        const gridName = btn.getAttribute("data-grid-prev");
-        btn.addEventListener("click", function () {
-          const grid = ciState.grids[gridName];
-          if (!grid) return;
-          grid.page = Math.max(1, grid.page - 1);
-          applyGridFilterAndRender(gridName);
-        });
-      });
-
-      qsa("[data-grid-next]").forEach(function (btn) {
-        const gridName = btn.getAttribute("data-grid-next");
-        btn.addEventListener("click", function () {
-          const grid = ciState.grids[gridName];
-          if (!grid) return;
-          const total = grid.filteredIndexes.length;
-          const totalPages = Math.max(
-            1,
-            Math.ceil(total / (grid.pageSize || 1))
-          );
-          grid.page = Math.min(totalPages, grid.page + 1);
-          applyGridFilterAndRender(gridName);
-        });
-      });
-
-      qsa("[data-grid-refresh]").forEach(function (btn) {
-        const gridName = btn.getAttribute("data-grid-refresh");
-        btn.addEventListener("click", function () {
-          const sheet = getSheetNameForGrid(gridName);
-          loadSheetGrid(gridName, sheet, 500);
-        });
-      });
-
-      qsa("[data-grid-print]").forEach(function (btn) {
-        const target = btn.getAttribute("data-grid-print");
-        btn.addEventListener("click", function () {
-          window.print();
-        });
-      });
-
-      const dashboardPrintBtn = qsa('[data-grid-print="dashboard"]')[0];
-      if (dashboardPrintBtn) {
-        dashboardPrintBtn.addEventListener("click", function () {
-          window.print();
-        });
-      }
-    }
-    // PLAYERS TAB — search, sort, pagination, KYC, comp/adjust, manual cashout
-    function initPlayersDomHandlers() {
-      const searchInput = qs("#ci-players-search");
-      const showAllBtn = qs("#ci-players-show-all");
-      const pageSizeSel = qs("#ci-players-page-size");
-      const prevBtn = qs("#ci-players-prev-page");
-      const nextBtn = qs("#ci-players-next-page");
-      const refreshBtn = qs("#ci-players-refresh-btn");
-      const tableBody = qs("#ci-players-tbody");
-
-      if (searchInput) {
-        searchInput.addEventListener("input", function () {
-          ciState.players.page = 1;
-          applyPlayersFilterAndRender();
-        });
-      }
-
-      if (showAllBtn) {
-        showAllBtn.addEventListener("click", function () {
-          if (searchInput) searchInput.value = "";
-          ciState.players.page = 1;
-          applyPlayersFilterAndRender();
-        });
-      }
-
-      if (pageSizeSel) {
-        pageSizeSel.addEventListener("change", function () {
-          const val = Number(pageSizeSel.value);
-          if (!isNaN(val) && val > 0) {
-            ciState.players.pageSize = val;
-            ciState.players.page = 1;
-            applyPlayersFilterAndRender();
-          }
-        });
-      }
-
-      if (prevBtn) {
-        prevBtn.addEventListener("click", function () {
-          ciState.players.page = Math.max(1, ciState.players.page - 1);
-          applyPlayersFilterAndRender();
-        });
-      }
-
-      if (nextBtn) {
-        nextBtn.addEventListener("click", function () {
-          const total = ciState.players.filtered.length;
-          const pageSize = ciState.players.pageSize;
-          const totalPages = Math.max(
-            1,
-            Math.ceil(total / (pageSize || 1))
-          );
-          ciState.players.page = Math.min(
-            totalPages,
-            ciState.players.page + 1
-          );
-          applyPlayersFilterAndRender();
-        });
-      }
-
-      if (refreshBtn) {
-        refreshBtn.addEventListener("click", function () {
-          loadPlayers();
-        });
-      }
-
-      if (tableBody) {
-        tableBody.addEventListener("click", function (event) {
-          const row = event.target.closest("tr");
-          if (!row) return;
-          const idxAttr = row.getAttribute("data-player-index");
-          if (!idxAttr) return;
-          const idx = Number(idxAttr);
-          if (isNaN(idx)) return;
-
-          const player = ciState.players.filtered[idx];
-          if (player) {
-            selectPlayerRow(idx);
-            renderPlayerDetail(player);
-          }
-        });
-      }
-
-      const theadRow = qs("#ci-players-thead-row");
-      if (theadRow) {
-        theadRow.addEventListener("click", function (event) {
-          const th = event.target.closest("th");
-          if (!th || !th.dataset.sortKey) return;
-          const sortKey = th.dataset.sortKey;
-          if (ciState.players.sortKey === sortKey) {
-            ciState.players.sortDir =
-              ciState.players.sortDir === "asc" ? "desc" : "asc";
-          } else {
-            ciState.players.sortKey = sortKey;
-            ciState.players.sortDir = "asc";
-          }
-          applyPlayersFilterAndRender();
-        });
-      }
-    }
-
-    // loadPlayers uses fetchPlayersFromSheet (no listPlayers action)
-    async function loadPlayers() {
-      if (!ciState.apiKey) return;
-      setLoading(true, "Loading Players…");
-      setStatus("Loading Players…", false);
-
-      try {
-        const players = await fetchPlayersFromSheet(2000);
-
-        ciState.players.list = players;
-        ciState.players.page = 1;
-        ciState.players.sortKey = "username";
-        ciState.players.sortDir = "asc";
-
-        renderPlayersHeader();
-        applyPlayersFilterAndRender();
-
-        setStatus("Players list refreshed from Players sheet.", false);
-      } catch (err) {
-        setStatus("Failed to load players: " + String(err.message || err), true);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    function renderPlayersHeader() {
-      const theadRow = qs("#ci-players-thead-row");
-      if (!theadRow) return;
-      theadRow.innerHTML = "";
-
-      const headers = [
-        { label: "Player ID", key: "playerId" },
-        { label: "Username", key: "username" },
-        { label: "Full Name", key: "fullName" },
-        { label: "Email", key: "email" },
-        { label: "Current Balance", key: "balance" },
-      ];
-
-      headers.forEach(function (h) {
-        const th = document.createElement("th");
-        th.textContent = h.label;
-        th.dataset.sortKey = h.key;
-
-        if (ciState.players.sortKey === h.key) {
-          const span = document.createElement("span");
-          span.className = "ci-sort-indicator";
-          span.textContent =
-            ciState.players.sortDir === "asc" ? "▲" : "▼";
-          th.appendChild(span);
-        }
-
-        theadRow.appendChild(th);
-      });
-    }
-
-    function applyPlayersFilterAndRender() {
-      const searchInput = qs("#ci-players-search");
-      const searchTerm = searchInput
-        ? searchInput.value.trim().toLowerCase()
-        : "";
-
-      const list = ciState.players.list || [];
-      const filtered = [];
-
-      list.forEach(function (p) {
-        const pid = (p.playerId || "").toString().toLowerCase();
-        const user = (p.username || "").toString().toLowerCase();
-        const name = (p.fullName || "").toString().toLowerCase();
-        const email = (p.email || "").toString().toLowerCase();
-        const balStr = (p.balance == null
-          ? ""
-          : String(p.balance)
-        ).toLowerCase();
-
-        if (!searchTerm) {
-          filtered.push(p);
-        } else {
-          if (
-            pid.indexOf(searchTerm) !== -1 ||
-            user.indexOf(searchTerm) !== -1 ||
-            name.indexOf(searchTerm) !== -1 ||
-            email.indexOf(searchTerm) !== -1 ||
-            balStr.indexOf(searchTerm) !== -1
-          ) {
-            filtered.push(p);
-          }
-        }
-      });
-
-      const sortKey = ciState.players.sortKey;
-      const dir = ciState.players.sortDir === "asc" ? 1 : -1;
-
-      filtered.sort(function (a, b) {
-        const av = a[sortKey];
-        const bv = b[sortKey];
-
-        if (sortKey === "balance") {
-          const an = Number(av || 0);
-          const bn = Number(bv || 0);
-          return (an - bn) * dir;
-        }
-
-        const aStr = (av == null ? "" : String(av)).toLowerCase();
-        const bStr = (bv == null ? "" : String(bv)).toLowerCase();
-        if (aStr < bStr) return -1 * dir;
-        if (aStr > bStr) return 1 * dir;
-        return 0;
-      });
-
-      ciState.players.filtered = filtered;
-
-      const pageSize = ciState.players.pageSize;
-      const total = filtered.length;
-      const totalPages = Math.max(
-        1,
-        Math.ceil(total / (pageSize || 1))
-      );
-      if (ciState.players.page > totalPages)
-        ciState.players.page = totalPages;
-      if (ciState.players.page < 1) ciState.players.page = 1;
-
-      renderPlayersTable();
-    }
-
-    function renderPlayersTable() {
-      const tbody = qs("#ci-players-tbody");
-      const pageInfo = qs("#ci-players-page-info");
-      if (!tbody || !pageInfo) return;
-
-      const filtered = ciState.players.filtered || [];
-      const page = ciState.players.page;
-      const pageSize = ciState.players.pageSize;
-      const total = filtered.length;
-
-      const totalPages = Math.max(
-        1,
-        Math.ceil(total / (pageSize || 1))
-      );
-      const start = (page - 1) * pageSize;
-      const end = Math.min(start + pageSize, total);
-
-      tbody.innerHTML = "";
-
-      if (!total) {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.colSpan = 5;
-        td.style.textAlign = "center";
-        td.style.color = "var(--text-muted)";
-        td.textContent = "No players found.";
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-      } else {
-        for (let i = start; i < end; i++) {
-          const p = filtered[i];
-          const tr = document.createElement("tr");
-          tr.setAttribute("data-player-index", String(i));
-
-          const pid = document.createElement("td");
-          pid.textContent = p.playerId || "";
-          tr.appendChild(pid);
-
-          const user = document.createElement("td");
-          user.textContent = p.username || "";
-          tr.appendChild(user);
-
-          const fullName = document.createElement("td");
-          fullName.textContent = p.fullName || "";
-          tr.appendChild(fullName);
-
-          const email = document.createElement("td");
-          email.textContent = p.email || "";
-          tr.appendChild(email);
-
-          const bal = document.createElement("td");
-          bal.textContent = formatNumber(p.balance || 0);
-          bal.style.textAlign = "right";
-          tr.appendChild(bal);
-
-          tbody.appendChild(tr);
-        }
-      }
-
-      pageInfo.textContent =
-        "Page " +
-        page +
-        " of " +
-        totalPages +
-        " • " +
-        formatNumber(total) +
-        " players";
-
-      qsa("#ci-players-tbody tr").forEach(function (row) {
-        row.classList.remove("ci-table-row-selected");
-      });
-    }
-
-    function selectPlayerRow(filteredIndex) {
-      qsa("#ci-players-tbody tr").forEach(function (row) {
-        row.classList.remove("ci-table-row-selected");
-      });
-
-      const row = qs(
-        '#ci-players-tbody tr[data-player-index="' +
-          String(filteredIndex) +
-          '"]'
-      );
-      if (row) row.classList.add("ci-table-row-selected");
-
-      const pill = qs("#ci-players-detail-pill");
-      if (pill) pill.textContent = "Player selected";
-    }
-
-    function buildPlayerDetailHtml(player) {
-      const balanceLabel = formatChips(player.balance || 0);
-
-      const headerHtml =
-        '<div class="ci-side-section">' +
-        '  <h4>Account</h4>' +
-        '  <div class="ci-side-row"><span class="ci-side-label">Player ID</span><span class="ci-side-value ci-mono">' +
-        (player.playerId || "—") +
-        "</span></div>" +
-        '  <div class="ci-side-row"><span class="ci-side-label">Username</span><span class="ci-side-value ci-mono">' +
-        (player.username || "—") +
-        "</span></div>" +
-        '  <div class="ci-side-row"><span class="ci-side-label">Full Name</span><span class="ci-side-value">' +
-        (player.fullName || "—") +
-        "</span></div>" +
-        '  <div class="ci-side-row"><span class="ci-side-label">Email</span><span class="ci-side-value ci-mono">' +
-        (player.email || "—") +
-        "</span></div>" +
-        '  <div class="ci-side-row"><span class="ci-side-label">Balance</span><span class="ci-side-value">' +
-        balanceLabel +
-        "</span></div>" +
-        "</div>";
-
-      const kycStatus = player.kycStatus || "";
-      const riskStatus = player.riskStatus || "";
-      const vipLevel = player.vipLevel || "";
-      const flagNotes = player.flagNotes || "";
-      const selfUntil = player.selfExcludedUntil || "";
-      const selfReason = player.selfExclusionReason || "";
-      const selfActive =
-        player.selfExclusionActive === true ||
-        String(player.selfExclusionActive || "")
-          .toLowerCase()
-          .match(/^(true|yes|y|1|active|on)$/);
-
-      const kycHtml =
-        '<div class="ci-side-section">' +
-        '  <h4>KYC, Risk &amp; VIP</h4>' +
-        '  <div class="ci-field" style="margin-bottom:6px;">' +
-        '    <label style="font-size:11px;">KYC Status</label>' +
-        '    <select class="ci-select" id="ci-player-kyc-status">' +
-        '      <option value="">(no value)</option>' +
-        '      <option value="Pending"' +
-        (kycStatus === "Pending" ? " selected" : "") +
-        ">Pending</option>" +
-        '      <option value="Approved"' +
-        (kycStatus === "Approved" ? " selected" : "") +
-        ">Approved</option>" +
-        '      <option value="Declined"' +
-        (kycStatus === "Declined" ? " selected" : "") +
-        ">Declined</option>" +
-        '      <option value="Review"' +
-        (kycStatus === "Review" ? " selected" : "") +
-        ">Review</option>" +
-        "    </select>" +
-        "  </div>" +
-        '  <div class="ci-side-grid">' +
-        '    <div class="ci-field" style="margin-bottom:6px;">' +
-        '      <label style="font-size:11px;">Risk Status</label>' +
-        '      <select class="ci-select" id="ci-player-risk-status">' +
-        '        <option value="">(no value)</option>' +
-        '        <option value="Low"' +
-        (riskStatus === "Low" ? " selected" : "") +
-        ">Low</option>" +
-        '        <option value="Medium"' +
-        (riskStatus === "Medium" ? " selected" : "") +
-        ">Medium</option>" +
-        '        <option value="High"' +
-        (riskStatus === "High" ? " selected" : "") +
-        ">High</option>" +
-        "      </select>" +
-        "    </div>" +
-        '    <div class="ci-field" style="margin-bottom:6px;">' +
-        '      <label style="font-size:11px;">VIP Level</label>' +
-        '      <select class="ci-select" id="ci-player-vip-level">' +
-        '        <option value="">(none)</option>' +
-        '        <option value="Bronze"' +
-        (vipLevel === "Bronze" ? " selected" : "") +
-        ">Bronze</option>" +
-        '        <option value="Silver"' +
-        (vipLevel === "Silver" ? " selected" : "") +
-        ">Silver</option>" +
-        '        <option value="Gold"' +
-        (vipLevel === "Gold" ? " selected" : "") +
-        ">Gold</option>" +
-        '        <option value="Platinum"' +
-        (vipLevel === "Platinum" ? " selected" : "") +
-        ">Platinum</option>" +
-        '        <option value="Diamond"' +
-        (vipLevel === "Diamond" ? " selected" : "") +
-        ">Diamond</option>" +
-        "      </select>" +
-        "    </div>" +
-        "  </div>" +
-        '  <div class="ci-field" style="margin-bottom:6px;">' +
-        '    <label style="font-size:11px;">Flag Notes</label>' +
-        '    <textarea class="ci-textarea" id="ci-player-flag-notes" rows="2">' +
-        (flagNotes || "") +
-        "</textarea>" +
-        "  </div>" +
-        '  <div class="ci-side-controls-row">' +
-        '    <button type="button" class="ci-btn-secondary" id="ci-player-save-flags-btn">Save Flags</button>' +
-        "  </div>" +
-        "</div>";
-
-      const selfExclHtml =
-        '<div class="ci-side-section">' +
-        "  <h4>Self-Exclusion</h4>" +
-        '  <div class="ci-side-grid">' +
-        '    <div class="ci-field" style="margin-bottom:6px;">' +
-        '      <label style="font-size:11px;">Excluded Until</label>' +
-        '      <input type="text" class="ci-input" id="ci-player-self-until" placeholder="YYYY-MM-DD" value="' +
-        (selfUntil || "") +
-        '"/>' +
-        "    </div>" +
-        '    <div class="ci-field" style="margin-bottom:6px;">' +
-        '      <label style="font-size:11px;">Active</label>' +
-        '      <select class="ci-select" id="ci-player-self-active">' +
-        '        <option value="false"' +
-        (!selfActive ? " selected" : "") +
-        ">No</option>" +
-        '        <option value="true"' +
-        (selfActive ? " selected" : "") +
-        ">Yes</option>" +
-        "      </select>" +
-        "    </div>" +
-        "  </div>" +
-        '  <div class="ci-field" style="margin-bottom:6px;">' +
-        '    <label style="font-size:11px;">Reason</label>' +
-        '    <textarea class="ci-textarea" id="ci-player-self-reason" rows="2">' +
-        (selfReason || "") +
-        "</textarea>" +
-        "  </div>" +
-        '  <div class="ci-side-callout">' +
-        "    Self-exclusion is a player-protection control. Changing these values should follow your house policy and any regulatory guidelines." +
-        "  </div>" +
-        "</div>";
-
-      const adjustHtml =
-        '<div class="ci-side-section">' +
-        "  <h4>Adjust / Comp Chips</h4>" +
-        '  <div class="ci-field" style="margin-bottom:6px;">' +
-        '    <label style="font-size:11px;">Adjustment Amount (+/− chips)</label>' +
-        '    <input type="number" class="ci-input" id="ci-player-adjust-amount" placeholder="e.g. 25000 or -5000"/>' +
-        "  </div>" +
-        '  <div class="ci-field" style="margin-bottom:6px;">' +
-        '    <label style="font-size:11px;">Notes / Reason</label>' +
-        '    <textarea class="ci-textarea" id="ci-player-adjust-notes" rows="2" placeholder="Internal notes for this adjustment…"></textarea>' +
-        "  </div>" +
-        '  <div class="ci-side-controls-row">' +
-        '    <button type="button" class="ci-btn-secondary" id="ci-player-apply-adjustment">Apply Adjustment</button>' +
-        '    <button type="button" class="ci-btn-ghost" id="ci-player-manual-cashout">Manual Cashout</button>' +
-        "  </div>" +
-        '  <div class="ci-side-callout">' +
-        "    Positive amounts add chips (comps / corrections). Negative amounts deduct chips. All activity is logged and can be reconciled in the Game Ledger and Log sheets." +
-        "  </div>" +
-        "</div>";
-
-      return headerHtml + kycHtml + selfExclHtml + adjustHtml;
-    }
-
-    function renderPlayerDetail(player) {
-      const container = qs("#ci-players-detail-body");
-      const pill = qs("#ci-players-detail-pill");
-      if (!container) return;
-
-      container.innerHTML = buildPlayerDetailHtml(player);
-      if (pill) {
-        const label =
-          (player.username || player.fullName || player.playerId || "Player").toString();
-        pill.textContent = trimString(label, 26);
-      }
-
-      const saveFlagsBtn = qs("#ci-player-save-flags-btn");
-      if (saveFlagsBtn) {
-        saveFlagsBtn.addEventListener("click", function () {
-          savePlayerFlagsFromDetail(player);
-        });
-      }
-
-      const applyAdjBtn = qs("#ci-player-apply-adjustment");
-      if (applyAdjBtn) {
-        applyAdjBtn.addEventListener("click", function () {
-          applyPlayerAdjustmentFromDetail(player, false);
-        });
-      }
-
-      const manualCashoutBtn = qs("#ci-player-manual-cashout");
-      if (manualCashoutBtn) {
-        manualCashoutBtn.addEventListener("click", function () {
-          applyPlayerAdjustmentFromDetail(player, true);
-        });
-      }
-    }
-
-    async function savePlayerFlagsFromDetail(player) {
-      if (!ciState.apiKey) return;
-
-      const kycEl = qs("#ci-player-kyc-status");
-      const riskEl = qs("#ci-player-risk-status");
-      const vipEl = qs("#ci-player-vip-level");
-      const flagNotesEl = qs("#ci-player-flag-notes");
-      const selfUntilEl = qs("#ci-player-self-until");
-      const selfActiveEl = qs("#ci-player-self-active");
-      const selfReasonEl = qs("#ci-player-self-reason");
-
-      const params = {
-        playerId: player.playerId || "",
-        username: player.username || "",
-        email: player.email || "",
-        kycStatus: kycEl ? kycEl.value : "",
-        riskStatus: riskEl ? riskEl.value : "",
-        vipLevel: vipEl ? vipEl.value : "",
-        flagNotes: flagNotesEl ? flagNotesEl.value : "",
-        selfExcludedUntil: selfUntilEl ? selfUntilEl.value : "",
-        selfExclusionReason: selfReasonEl ? selfReasonEl.value : "",
-        selfExclusionActive: selfActiveEl ? selfActiveEl.value : "false",
-      };
-
-      setLoading(true, "Saving player flags…");
-      setStatus("Saving updated KYC / risk / VIP flags to Players…", false);
-
-      try {
-        const res = await adminGet("savePlayerFlags", params);
-        if (!res || !res.ok) {
-          throw new Error((res && res.error) || "Unknown error");
-        }
-        setStatus("Player flags saved successfully.", false);
-      } catch (err) {
-        setStatus(
-          "Failed to save player flags: " + String(err.message || err),
-          true
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    async function applyPlayerAdjustmentFromDetail(player, isManualCashout) {
-      if (!ciState.apiKey) return;
-
-      const amountEl = qs("#ci-player-adjust-amount");
-      const notesEl = qs("#ci-player-adjust-notes");
-      if (!amountEl) return;
-
-      const raw = amountEl.value;
-      const amount = Number(raw);
-      if (!raw || isNaN(amount) || !amount) {
-        setStatus(
-          "Enter a non-zero Adjustment Amount (+/− chips) before applying.",
-          true
-        );
-        return;
-      }
-
-      const notes = notesEl ? notesEl.value : "";
-
-      if (isManualCashout && amount > 0) {
-        setStatus(
-          "For manual cashouts, use a negative amount to deduct chips.",
-          true
-        );
-        return;
-      }
-
-      const payload = {
-        eventType: isManualCashout ? "cashout_request" : "credit",
-        playerId: player.playerId || "",
-        username: player.username || "",
-        fullName: player.fullName || "",
-        email: player.email || "",
-        notes: notes || "",
-      };
-
-      if (isManualCashout) {
-        payload.requestChips = Math.abs(amount);
-        payload.payoutMethod = "Manual cashout via Admin Portal";
-        payload.payoutAddress = player.email || "";
-      } else {
-        payload.creditChips = amount;
-        payload.delta = amount;
-        payload.deltaType = amount > 0 ? "bonus" : "adjustment";
-        payload.source = "Admin Portal — Adjustment Amount";
-        payload.creditSource = "Admin Portal — Adjustment Amount";
-      }
-
-      setLoading(true, isManualCashout ? "Submitting cashout…" : "Applying adjustment…");
-      setStatus(
-        (isManualCashout
-          ? "Submitting manual cashout request…"
-          : "Applying chip adjustment via Events pipeline…"),
-        false
-      );
-
-      try {
-        const res = await postJson(CI_BACKEND_URL, payload);
-        if (!res || res.ok === false) {
-          const msg =
-            (res && (res.error || res.message)) ||
-            "Unknown backend error";
-          throw new Error(msg);
-        }
-
-        setStatus(
-          isManualCashout
-            ? "Cashout event submitted. Check Cashouts and Log sheets for details."
-            : "Adjustment submitted. Balances will reflect in Players / Game Ledger / Log.",
-          false
-        );
-
-        await loadPlayers();
-      } catch (err) {
-        setStatus(
-          "Failed to apply adjustment: " + String(err.message || err),
-          true
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    // REPORTS: rebuild + refresh
-    async function loadReports() {
-      await loadSheetGrid("reports", "Reports", 500);
-    }
-
-    async function rebuildAndLoadReports() {
-      setLoading(true, "Updating Reports…");
-      setStatus("Updating Reports and reloading…", false);
-
-      try {
-        const res = await adminGet("refreshReports", {});
-        if (!res || !res.ok) {
-          throw new Error((res && res.error) || "Unknown error");
-        }
-        await loadReports();
-        setStatus("Reports updated.", false);
-      } catch (err) {
-        setStatus(
-          "Failed to rebuild Reports: " + String(err.message || err),
-          true
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    // INIT
-    function initAdminPortal() {
-      const label = qs("#ci-admin-webapp-label");
-      if (label) {
-        label.textContent = "Configured";
-      }
-
-      const loginForm = qs("#ci-admin-login-form");
-      const loginReset = qs("#ci-admin-login-reset");
-      if (loginForm) {
-        loginForm.addEventListener("submit", handleAdminLogin);
-      }
-      if (loginReset) {
-        loginReset.addEventListener("click", resetLoginForm);
-      }
-
-      qsa(".ci-admin-tab").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          const name = btn.getAttribute("data-tab");
-          if (!name) return;
-          activateTab(name);
-        });
-      });
-
-      initSheetGrids();
-      attachGridDomHandlers();
-      initPlayersDomHandlers();
-
-      const dashboardRefreshBtn = qs("#ci-dashboard-refresh-btn");
-      if (dashboardRefreshBtn) {
-        dashboardRefreshBtn.addEventListener("click", function () {
-          loadDashboard();
-        });
-      }
-
-      const reportsRefreshBtn = qs("#ci-reports-refresh-btn");
-      if (reportsRefreshBtn) {
-        reportsRefreshBtn.addEventListener("click", function () {
-          rebuildAndLoadReports();
-        });
-      }
-
-      setStatus("Enter your admin credentials to unlock the portal.", false);
-      setOnlineBadge(false);
-    }
-
-    document.addEventListener("DOMContentLoaded", initAdminPortal);
+      /* Init */
+      document.addEventListener("DOMContentLoaded", init);
+    })();
   </script>
-</body>
-</html>
+</div>
