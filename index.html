@@ -1763,24 +1763,99 @@
               </div>
             </section>
 
-            <!-- REPORTS PANEL -->
-            <section class="ci-admin-panel" data-panel="reports">
-              <div class="ci-panel-header">
-                <div class="ci-panel-header-left">
-                  <h2>Reports</h2>
-                  <div class="ci-panel-subtitle">
-                    KPIs and snapshots from the Reports sheet.
-                  </div>
-                </div>
-                <div class="ci-panel-header-right">
-                  <button type="button" class="ci-btn-secondary" id="ci-reports-refresh-btn">
-                    Rebuild &amp; Refresh
-                  </button>
-                  <button type="button" class="ci-btn-ghost" data-grid-print="reports">
-                    Print
-                  </button>
-                </div>
-              </div>
+       <!-- REPORTS PANEL -->
+<section class="ci-admin-panel" data-panel="reports">
+  <div class="ci-panel-header">
+    <div class="ci-panel-header-left">
+      <h2>Reports</h2>
+      <div class="ci-panel-subtitle">
+        KPIs and snapshots from the Reports sheet.
+      </div>
+    </div>
+    <div class="ci-panel-header-right">
+      <button type="button" class="ci-btn-secondary" id="ci-reports-refresh-btn">
+        Rebuild &amp; Refresh
+      </button>
+      <button type="button" class="ci-btn-ghost" data-grid-print="reports">
+        Print
+      </button>
+    </div>
+  </div>
+
+  <!-- NEW: KPI row for Reports -->
+  <div class="ci-kpi-row" id="ci-reports-kpi-row">
+    <div class="ci-kpi-card">
+      <div class="ci-kpi-label">Total Chips in Wallets</div>
+      <div class="ci-kpi-value" id="ci-reports-kpi-total-balance">–</div>
+      <div class="ci-kpi-note">Liability snapshot from Reports.</div>
+    </div>
+    <div class="ci-kpi-card">
+      <div class="ci-kpi-label">Total Purchased Chips (Lifetime)</div>
+      <div class="ci-kpi-value" id="ci-reports-kpi-total-purchased">–</div>
+      <div class="ci-kpi-note">All chips purchased across cashier.</div>
+    </div>
+    <div class="ci-kpi-card">
+      <div class="ci-kpi-label">Total Cashed Out (Lifetime)</div>
+      <div class="ci-kpi-value" id="ci-reports-kpi-total-cashed">–</div>
+      <div class="ci-kpi-note">Total chips paid out to players.</div>
+    </div>
+    <div class="ci-kpi-card">
+      <div class="ci-kpi-label">House GGR (Lifetime)</div>
+      <div class="ci-kpi-value" id="ci-reports-kpi-house-ggr">–</div>
+      <div class="ci-kpi-note">House net win from Reports.</div>
+    </div>
+  </div>
+
+  <div class="ci-toolbar">
+    <div class="ci-toolbar-left">
+      <div class="ci-toolbar-search-wrap">
+        <span class="ci-toolbar-search-icon"></span>
+        <input
+          type="search"
+          class="ci-input ci-toolbar-search"
+          placeholder="Search within Reports sheet…"
+          autocomplete="off"
+          data-grid-search="reports"
+        />
+      </div>
+      <button type="button" class="ci-btn-ghost" data-grid-show-all="reports">
+        Show All
+      </button>
+    </div>
+    <div class="ci-toolbar-right">
+      <label>
+        Page Size
+        <select class="ci-select" data-grid-page-size="reports">
+          <option value="25" selected>25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="ci-table-wrap">
+    <div class="ci-table-scroll">
+      <table class="ci-table">
+        <thead>
+          <tr data-grid-head="reports"></tr>
+        </thead>
+        <tbody data-grid-body="reports"></tbody>
+      </table>
+    </div>
+    <div class="ci-pagination" data-grid-pagination="reports">
+      <div>
+        <button type="button" class="ci-btn-ghost" data-grid-prev="reports">
+          ◀ Prev
+        </button>
+        <button type="button" class="ci-btn-ghost" data-grid-next="reports">
+          Next ▶
+        </button>
+      </div>
+      <div data-grid-page-info="reports">Page 1 of 1 • 0 rows</div>
+    </div>
+  </div>
+</section>
 
               <div class="ci-toolbar">
                 <div class="ci-toolbar-left">
@@ -3681,31 +3756,136 @@
       }
     }
 
-    // REPORTS: rebuild + refresh
-    async function loadReports() {
-      await loadSheetGrid("reports", "Reports", 500);
-    }
+ // REPORTS: KPIs + rebuild + refresh
+function updateReportsKpis() {
+  const grid = ciState.grids.reports;
 
-    async function rebuildAndLoadReports() {
-      setLoading(true, "Updating Reports…");
-      setStatus("Updating Reports and reloading…", false);
+  const totalBalEl    = qs("#ci-reports-kpi-total-balance");
+  const totalPurchEl  = qs("#ci-reports-kpi-total-purchased");
+  const totalCashedEl = qs("#ci-reports-kpi-total-cashed");
+  const houseGgrEl    = qs("#ci-reports-kpi-house-ggr");
 
-      try {
-        const res = await adminGet("refreshReports", {});
-        if (!res || !res.ok) {
-          throw new Error((res && res.error) || "Unknown error");
+  // If KPI DOM isn't on screen yet, just bail quietly.
+  if (!totalBalEl || !totalPurchEl || !totalCashedEl || !houseGgrEl) {
+    return;
+  }
+
+  // Default UI state
+  function resetKpis() {
+    totalBalEl.textContent    = "–";
+    totalPurchEl.textContent  = "–";
+    totalCashedEl.textContent = "–";
+    houseGgrEl.textContent    = "–";
+  }
+
+  if (!grid || !Array.isArray(grid.rows) || grid.rows.length === 0) {
+    resetKpis();
+    return;
+  }
+
+  const headers = grid.headers || [];
+  const latestRow = grid.rows[0] || [];
+
+  // Helper: find column index by trying multiple header labels
+  function findCol(candidates, fallbackIndex) {
+    if (!Array.isArray(headers) || !headers.length) return fallbackIndex;
+    for (let i = 0; i < headers.length; i++) {
+      const raw = headers[i];
+      const label = raw == null ? "" : String(raw).toLowerCase().trim();
+      for (let j = 0; j < candidates.length; j++) {
+        if (label === candidates[j].toLowerCase()) {
+          return i;
         }
-        await loadReports();
-        setStatus("Reports updated.", false);
-      } catch (err) {
-        setStatus(
-          "Failed to rebuild Reports: " + String(err.message || err),
-          true
-        );
-      } finally {
-        setLoading(false);
       }
     }
+    return fallbackIndex;
+  }
+
+  // Helper: safely pull numeric value
+  function getNumeric(row, idx) {
+    if (!row || idx == null || idx < 0 || idx >= row.length) return 0;
+    const v = Number(row[idx]);
+    return isNaN(v) ? 0 : v;
+  }
+
+  const idxTotalBal = findCol(
+    [
+      "total chips in wallets",
+      "total chips in wallets (liability)",
+      "total balance",
+      "total bal"
+    ],
+    1
+  );
+  const idxTotalPurch = findCol(
+    [
+      "total purchased chips",
+      "total purchased",
+      "total purch"
+    ],
+    2
+  );
+  const idxTotalCashed = findCol(
+    [
+      "total chips cashed out",
+      "total cashed out",
+      "total cashed"
+    ],
+    3
+  );
+  const idxHouseGgr = findCol(
+    [
+      "house ggr",
+      "house net win",
+      "ggr"
+    ],
+    4
+  );
+
+  const totalBal    = getNumeric(latestRow, idxTotalBal);
+  const totalPurch  = getNumeric(latestRow, idxTotalPurch);
+  const totalCashed = getNumeric(latestRow, idxTotalCashed);
+  const houseGgr    = getNumeric(latestRow, idxHouseGgr);
+
+  totalBalEl.textContent    = formatNumber(totalBal);
+  totalPurchEl.textContent  = formatNumber(totalPurch);
+  totalCashedEl.textContent = formatNumber(totalCashed);
+
+  if (houseGgr === 0) {
+    houseGgrEl.textContent = "0";
+  } else {
+    const sign = houseGgr > 0 ? "+" : "-";
+    const absVal = Math.abs(houseGgr);
+    houseGgrEl.textContent = sign + formatNumber(absVal);
+  }
+}
+
+async function loadReports() {
+  // Load the Reports sheet into the grid state, then compute KPIs from the latest row.
+  await loadSheetGrid("reports", "Reports", 500);
+  updateReportsKpis();
+}
+
+async function rebuildAndLoadReports() {
+  setLoading(true, "Updating Reports…");
+  setStatus("Updating Reports and reloading…", false);
+
+  try {
+    const res = await adminGet("refreshReports", {});
+    if (!res || !res.ok) {
+      throw new Error((res && res.error) || "Unknown error");
+    }
+    await loadReports(); // reload grid + recompute KPIs
+    setStatus("Reports updated.", false);
+  } catch (err) {
+    setStatus(
+      "Failed to rebuild Reports: " + String(err.message || err),
+      true
+    );
+  } finally {
+    setLoading(false);
+  }
+}
 
     // INIT
     function initAdminPortal() {
