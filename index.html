@@ -2823,6 +2823,22 @@ async function loadSheetGrid(gridName, sheetNameOverride, maxRowsOverride) {
           grid.page = 1;
           applyGridFilterAndRender(gridName);
         });
+        // INSERT THIS BLOCK HERE:
+
+    input.addEventListener("keydown", function (event) {
+      if (event.keyCode === 13 || event.key === 'Enter') {
+        event.preventDefault(); 
+        
+        // Helper to trigger the server fetch
+        const fetchAndRender = function() {
+            const sheet = getSheetNameForGrid(gridName);
+            loadSheetGrid(gridName, sheet, 500);
+        };
+        fetchAndRender();
+      }
+    });
+    
+// >>> END OF INSERTION <<<
       });
 
       qsa("[data-grid-show-all]").forEach(function (btn) {
