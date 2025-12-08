@@ -2548,46 +2548,54 @@
       }
     }
 
-    async function loadSheetGrid(gridName, sheetNameOverride, maxRowsOverride) {
-      const grid = ciState.grids[gridName];
-      if (!grid) return;
-      const sheetName = sheetNameOverride || getSheetNameForGrid(gridName);
-      if (!sheetName) return;
+async function loadSheetGrid(gridName, sheetNameOverride, maxRowsOverride) {
+  const grid = ciState.grids[gridName];
+  if (!grid) return;
+  const sheetName = sheetNameOverride || getSheetNameForGrid(gridName);
+  if (!sheetName) return;
 
-      const maxRows = maxRowsOverride || grid.maxRows;
+  const maxRows = maxRowsOverride || grid.maxRows;
+  
+  // 1. EXTRACT SEARCH TERM FROM INPUT FIELD (NEW LOGIC)
+  const searchInput = qs('[data-grid-search="' + gridName + '"]');
+  const searchTerm = searchInput ? searchInput.value.trim() : "";
 
-      setLoading(true, "Loading " + sheetName + "…");
-      setStatus("Loading " + sheetName + "…", false);
+  setLoading(true, "Loading " + sheetName + "…");
+  setStatus("Loading " + sheetName + "…", false);
 
-      try {
-        const res = await adminGet("getSheet", {
-          sheetName: sheetName,
-          maxRows: maxRows,
-        });
+  try {
+    // 2. PASS SEARCH TERM TO BACKEND API (UPDATED API CALL)
+    const res = await adminGet("getSheet", {
+      sheetName: sheetName,
+      maxRows: maxRows,
+      search: searchTerm, // <-- PASSES QUERY TO BACKEND FOR SERVER-SIDE FILTERING
+    });
 
-        if (!res || !res.ok) {
-          throw new Error((res && res.error) || "Unknown error");
-        }
-
-        grid.headers = res.headers || [];
-        grid.rows = res.rows || [];
-        grid.rowNumbers = Array.isArray(res.rowNumbers) ? res.rowNumbers : [];
-
-        grid.sortIndex = 0;
-        grid.sortDir = "desc";
-        grid.page = 1;
-
-        applyGridFilterAndRender(gridName);
-        setStatus(sheetName + " updated.", false);
-      } catch (err) {
-        setStatus(
-          "Failed to load " + sheetName + ": " + String(err.message || err),
-          true
-        );
-      } finally {
-        setLoading(false);
-      }
+    if (!res || !res.ok) {
+      throw new Error((res && res.error) || "Unknown error");
     }
+
+    grid.headers = res.headers || [];
+    grid.rows = res.rows || [];
+    grid.rowNumbers = Array.isArray(res.rowNumbers) ? res.rowNumbers : [];
+
+    // Reset filtering indices because the server has already filtered the result set
+    grid.sortIndex = 0; 
+    grid.sortDir = "desc";
+    grid.page = 1;
+
+    // We still call applyGridFilterAndRender to handle sorting/pagination display
+    applyGridFilterAndRender(gridName);
+    setStatus(sheetName + " updated.", false);
+  } catch (err) {
+    setStatus(
+      "Failed to load " + sheetName + ": " + String(err.message || err),
+      true
+    );
+  } finally {
+    setLoading(false);
+  }
+}
 
     function applyGridFilterAndRender(gridName) {
       const grid = ciState.grids[gridName];
@@ -3788,7 +3796,7 @@ function updateReportsKpis() {
       "house net win",
       "ggr"
     ],
-    4
+    9
   );
 
   const totalBal    = getNumeric(latestRow, idxTotalBal);
