@@ -2729,28 +2729,67 @@ async function loadSheetGrid(gridName, sheetNameOverride, maxRowsOverride) {
           row.forEach(function (cell, colIdx) {
             const td = document.createElement("td");
 
-            if (gridName === "rewards") {
-              const headerLabel =
-                headers[colIdx] == null ? "" : String(headers[colIdx]);
-              if (headerLabel.toLowerCase() === "status") {
-                const valueStr = cell == null ? "" : String(cell);
-                const btn = document.createElement("button");
-                btn.type = "button";
-                btn.className = "ci-link-button";
-                btn.textContent = valueStr || "(set)";
-                btn.setAttribute("data-status-edit", "rewards");
-                btn.setAttribute("data-row-idx", String(rowIdx));
-                btn.setAttribute("data-status-value", valueStr);
-                td.appendChild(btn);
-              } else {
-                td.textContent = cell == null ? "" : String(cell);
-              }
-            } else {
-              td.textContent = cell == null ? "" : String(cell);
-            }
+           // INSIDE renderGrid(gridName) - Replace the loop content for cell creation:
 
-            tr.appendChild(td);
-          });
+      row.forEach(function (cell, colIdx) {
+        const td = document.createElement("td");
+        
+        // CUSTOM LOGIC: Cashouts Status Dropdown
+        const headerName = String(headers[colIdx] || "").toLowerCase().trim();
+        
+        if (gridName === "cashouts" && headerName === "status") {
+           // Render Dropdown
+           const select = document.createElement("select");
+           select.className = "ci-select";
+           select.style.padding = "2px 4px";
+           select.style.fontSize = "11px";
+           
+           const options = ["Pending", "Accepted", "Rejected"];
+           const currentVal = String(cell || "Pending");
+           
+           options.forEach(opt => {
+             const opEl = document.createElement("option");
+             opEl.value = opt;
+             opEl.textContent = opt;
+             if (currentVal.toLowerCase() === opt.toLowerCase()) {
+               opEl.selected = true;
+             }
+             select.appendChild(opEl);
+           });
+
+           // Trigger Update on Change
+           select.onchange = function() {
+             const newVal = this.value;
+             const rowNum = grid.rowNumbers[i]; // Get real sheet row number
+             if (!rowNum) return;
+             
+             // Call Backend to Update Cell
+             const params = {
+               action: "updateCellStatus",
+               sheetName: "Cashouts",
+               rowNumbers: String(rowNum),
+               value: newVal,
+               columnName: "Status" 
+             };
+             
+             // Using the existing adminGet logic
+             adminGet("updateCellStatus", params).then(res => {
+                if(res.ok) {
+                   this.style.borderColor = "#4ade80"; // Visual Success
+                } else {
+                   alert("Update failed");
+                }
+             });
+           };
+           
+           td.appendChild(select);
+        } else {
+           // Default Text Rendering
+           td.textContent = cell == null ? "" : String(cell);
+        }
+
+        tr.appendChild(td);
+      });
 
           bodyEl.appendChild(tr);
         }
