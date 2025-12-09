@@ -2727,18 +2727,15 @@ async function loadSheetGrid(gridName, sheetNameOverride, maxRowsOverride) {
           const tr = document.createElement("tr");
 
           row.forEach(function (cell, colIdx) {
-            const td = document.createElement("td");
-
-           // INSIDE renderGrid(gridName) - Replace the loop content for cell creation:
-
-      row.forEach(function (cell, colIdx) {
         const td = document.createElement("td");
         
-        // CUSTOM LOGIC: Cashouts Status Dropdown
-        const headerName = String(headers[colIdx] || "").toLowerCase().trim();
-        
-        if (gridName === "cashouts" && headerName === "status") {
-           // Render Dropdown
+        // Get the header name, clean it for comparison
+        const headerLabel = headers[colIdx] == null ? "" : String(headers[colIdx]);
+        const headerNameClean = headerLabel.toLowerCase().trim();
+
+        // 1. Check for Cashouts Status (Dropdown)
+        if (gridName === "cashouts" && headerNameClean === "status") {
+           // Render Dropdown (The Cashouts Fix)
            const select = document.createElement("select");
            select.className = "ci-select";
            select.style.padding = "2px 4px";
@@ -2757,13 +2754,12 @@ async function loadSheetGrid(gridName, sheetNameOverride, maxRowsOverride) {
              select.appendChild(opEl);
            });
 
-           // Trigger Update on Change
+           // Trigger Update on Change (Connecting to updateCellStatus backend)
            select.onchange = function() {
              const newVal = this.value;
              const rowNum = grid.rowNumbers[i]; // Get real sheet row number
              if (!rowNum) return;
              
-             // Call Backend to Update Cell
              const params = {
                action: "updateCellStatus",
                sheetName: "Cashouts",
@@ -2783,6 +2779,26 @@ async function loadSheetGrid(gridName, sheetNameOverride, maxRowsOverride) {
            };
            
            td.appendChild(select);
+
+        // 2. Preserve Rewards Status (Link Button)
+        } else if (gridName === "rewards" && headerNameClean === "status") {
+            const valueStr = cell == null ? "" : String(cell);
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "ci-link-button";
+            btn.textContent = valueStr || "(set)";
+            btn.setAttribute("data-status-edit", "rewards");
+            btn.setAttribute("data-row-idx", String(i)); 
+            btn.setAttribute("data-status-value", valueStr);
+            td.appendChild(btn);
+
+        // 3. Default Rendering for all other columns/sheets
+        } else {
+           td.textContent = cell == null ? "" : String(cell);
+        }
+
+        tr.appendChild(td);
+      });
         } else {
            // Default Text Rendering
            td.textContent = cell == null ? "" : String(cell);
