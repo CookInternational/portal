@@ -2727,85 +2727,30 @@ async function loadSheetGrid(gridName, sheetNameOverride, maxRowsOverride) {
           const tr = document.createElement("tr");
 
           row.forEach(function (cell, colIdx) {
-        const td = document.createElement("td");
-        
-        // Get the header name, clean it for comparison
-        const headerLabel = headers[colIdx] == null ? "" : String(headers[colIdx]);
-        const headerNameClean = headerLabel.toLowerCase().trim();
+            const td = document.createElement("td");
 
-        // 1. Check for Cashouts Status (Dropdown)
-        if (gridName === "cashouts" && headerNameClean === "status") {
-           // Render Dropdown (The Cashouts Fix)
-           const select = document.createElement("select");
-           select.className = "ci-select";
-           select.style.padding = "2px 4px";
-           select.style.fontSize = "11px";
-           
-           const options = ["Pending", "Accepted", "Rejected"];
-           const currentVal = String(cell || "Pending");
-           
-           options.forEach(opt => {
-             const opEl = document.createElement("option");
-             opEl.value = opt;
-             opEl.textContent = opt;
-             if (currentVal.toLowerCase() === opt.toLowerCase()) {
-               opEl.selected = true;
-             }
-             select.appendChild(opEl);
-           });
+            if (gridName === "rewards") {
+              const headerLabel =
+                headers[colIdx] == null ? "" : String(headers[colIdx]);
+              if (headerLabel.toLowerCase() === "status") {
+                const valueStr = cell == null ? "" : String(cell);
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "ci-link-button";
+                btn.textContent = valueStr || "(set)";
+                btn.setAttribute("data-status-edit", "rewards");
+                btn.setAttribute("data-row-idx", String(rowIdx));
+                btn.setAttribute("data-status-value", valueStr);
+                td.appendChild(btn);
+              } else {
+                td.textContent = cell == null ? "" : String(cell);
+              }
+            } else {
+              td.textContent = cell == null ? "" : String(cell);
+            }
 
-           // Trigger Update on Change (Connecting to updateCellStatus backend)
-           select.onchange = function() {
-             const newVal = this.value;
-             const rowNum = grid.rowNumbers[i]; // Get real sheet row number
-             if (!rowNum) return;
-             
-             const params = {
-               action: "updateCellStatus",
-               sheetName: "Cashouts",
-               rowNumbers: String(rowNum),
-               value: newVal,
-               columnName: "Status" 
-             };
-             
-             // Using the existing adminGet logic
-             adminGet("updateCellStatus", params).then(res => {
-                if(res.ok) {
-                   this.style.borderColor = "#4ade80"; // Visual Success
-                } else {
-                   alert("Update failed");
-                }
-             });
-           };
-           
-           td.appendChild(select);
-
-        // 2. Preserve Rewards Status (Link Button)
-        } else if (gridName === "rewards" && headerNameClean === "status") {
-            const valueStr = cell == null ? "" : String(cell);
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "ci-link-button";
-            btn.textContent = valueStr || "(set)";
-            btn.setAttribute("data-status-edit", "rewards");
-            btn.setAttribute("data-row-idx", String(i)); 
-            btn.setAttribute("data-status-value", valueStr);
-            td.appendChild(btn);
-
-        // 3. Default Rendering for all other columns/sheets
-        } else {
-           td.textContent = cell == null ? "" : String(cell);
-        }
-
-        tr.appendChild(td);
-      });
-        } else {
-           // Default Text Rendering
-           td.textContent = cell == null ? "" : String(cell);
-        }
-
-        tr.appendChild(td);
-      });
+            tr.appendChild(td);
+          });
 
           bodyEl.appendChild(tr);
         }
