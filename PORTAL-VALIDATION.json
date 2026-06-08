@@ -1,0 +1,12 @@
+{
+  "title": "Admin Portal & House Dashboard | Cook International Casino",
+  "has_inline_style": true,
+  "has_inline_admin_javascript": true,
+  "has_external_stylesheet_reference": false,
+  "has_external_admin_js_reference": false,
+  "house_dashboard_title_preserved": true,
+  "house_dashboard_terminology_preserved": true,
+  "portal_cname": "portal.cook-international.com",
+  "production_logo_with_local_fallback": true,
+  "admin_js_syntax_ok": true
+}

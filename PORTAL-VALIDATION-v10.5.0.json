@@ -1,0 +1,8 @@
+{
+  "version": "v10.5.0 Alpha",
+  "cname": "portal.cook-international.com",
+  "self_contained_index": true,
+  "no_12_character_minimum": true,
+  "login_reset_hotfix": true,
+  "js_syntax_ok": true
+}
