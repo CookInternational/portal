@@ -7,16 +7,568 @@
   <meta name="theme-color" content="#07030f">
   <title>Admin Portal &amp; House Dashboard | Cook International Casino</title>
   <link rel="canonical" href="https://portal.cook-international.com/">
-  <link rel="icon" href="/assets/CookIntlCasinoLogo.png" type="image/png">
-  <link rel="stylesheet" href="/assets/css/admin.css">
-  <script defer src="/assets/js/site-config.js"></script>
-  <script defer src="/assets/js/admin.js"></script>
+  <link rel="icon" href="https://casino.cook-international.com/assets/CookIntlCasinoLogo.png" type="image/png">
+<style>
+
+:root {
+  color-scheme: dark;
+  --bg: #05020b;
+  --shell: radial-gradient(circle at top, #372257 0, #07030f 55%, #020007 100%);
+  --panel: linear-gradient(145deg, rgba(17,24,39,.97), rgba(15,23,42,.97));
+  --surface: rgba(15,23,42,.95);
+  --surface-2: rgba(10,15,30,.98);
+  --line: rgba(247,216,122,.35);
+  --blue-line: rgba(30,64,175,.82);
+  --gold: #f7d87a;
+  --gold-strong: #facc6b;
+  --text: #f9f6ff;
+  --muted: #9ca3af;
+  --danger: #f97373;
+  --success: #4ade80;
+  --shadow: 0 24px 80px rgba(0,0,0,.72);
+}
+
+* { box-sizing: border-box; }
+
+html, body { min-width: 320px; min-height: 100%; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top, #372257 0, #05020b 55%, #020007 100%);
+  color: var(--text);
+}
+
+button, input, select, textarea { font: inherit; }
+
+.admin-page {
+  width: min(1280px, calc(100% - 32px));
+  min-height: calc(100vh - 64px);
+  margin: 32px auto;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  overflow: hidden;
+  background: var(--shell);
+  box-shadow: var(--shadow), 0 0 0 1px rgba(15,23,42,.8);
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 24px 12px;
+  border-bottom: 1px solid rgba(148,163,184,.2);
+  background: rgba(7,3,15,.42);
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.admin-logo {
+  width: 185px;
+  max-width: 48vw;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,.7));
+}
+
+.admin-kicker,
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+.admin-header h1 {
+  margin: 0;
+  color: #fef9c3;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.admin-subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.admin-session {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(128px, 1fr));
+  gap: 6px;
+  min-width: min(500px, 45vw);
+  font-size: 11px;
+}
+
+.admin-session > div {
+  padding: 7px 9px;
+  border: 1px solid rgba(148,163,184,.3);
+  border-radius: 12px;
+  background: rgba(15,23,42,.88);
+}
+
+.admin-session span {
+  display: block;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: 9px;
+}
+
+.admin-session strong {
+  display: block;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-session .button { grid-column: 1 / -1; }
+
+.admin-main {
+  padding: 8px 16px 16px;
+}
+
+.status-strip {
+  min-height: 20px;
+  max-width: 540px;
+  margin: 0 auto 8px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(148,163,184,.45);
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgba(15,23,42,.9);
+  font-size: 11px;
+}
+
+.status-strip::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex: 0 0 auto;
+}
+
+.status-strip.is-error {
+  color: #fecaca;
+  border-color: rgba(248,113,113,.85);
+}
+
+.status-strip.is-success {
+  color: #bbf7d0;
+  border-color: rgba(74,222,128,.8);
+}
+
+.login-view {
+  min-height: 68vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0 40px;
+}
+
+.panel {
+  border: 1px solid rgba(30,64,175,.8);
+  border-radius: 22px;
+  background: var(--panel);
+  box-shadow: 0 18px 50px rgba(15,23,42,.9), 0 0 0 1px rgba(15,23,42,.8);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 24px 22px 22px;
+}
+
+.login-card h2,
+.panel h2,
+.action-card h3,
+.subpanel h3 {
+  margin: 0;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.login-card > p,
+.panel-heading p,
+.action-card p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+label {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 14px;
+  color: #e5e7eb;
+  font-size: 12px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px 9px;
+  border: 1px solid rgba(148,163,184,.8);
+  border-radius: 10px;
+  outline: none;
+  color: var(--text);
+  background: rgba(15,23,42,.98);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px rgba(247,216,122,.45);
+}
+
+textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.button {
+  border: none;
+  border-radius: 999px;
+  padding: 7px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: transform .08s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.button:hover { transform: translateY(-1px); }
+
+.button-primary {
+  color: #221600;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--gold-strong), var(--gold));
+  box-shadow: 0 8px 20px rgba(248,213,116,.25);
+}
+
+.button-secondary,
+.button-quiet {
+  color: #e5e7eb;
+  border: 1px solid rgba(148,163,184,.8);
+  background: rgba(15,23,42,.9);
+}
+
+.button-secondary:hover,
+.button-quiet:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.form-message {
+  min-height: 18px;
+  margin: 12px 0 0;
+  color: #fecaca;
+  font-size: 11px;
+}
+
+.app-view {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 6px 0 20px;
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  padding: 4px 2px 2px;
+  overflow-x: auto;
+  border: 1px solid rgba(30,64,175,.5);
+  border-radius: 999px;
+  background: rgba(15,23,42,.92);
+  scrollbar-width: thin;
+}
+
+.admin-tabs button {
+  flex: 0 0 auto;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 999px;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.admin-tabs button.is-active {
+  color: #fef9c3;
+  background: radial-gradient(circle at top, rgba(247,216,122,.08), rgba(15,23,42,.98));
+  box-shadow: 0 0 0 1px rgba(248,213,116,.45), 0 10px 24px rgba(0,0,0,.9);
+}
+
+.dashboard-panel,
+.resource-panel,
+.actions-panel {
+  min-height: 420px;
+  padding: 14px 14px 12px;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(51,65,85,.85);
+}
+
+.panel-heading h2 {
+  font-size: 15px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.panel-heading p {
+  margin: 2px 0 0;
+  font-size: 11px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.kpi {
+  padding: 8px 9px 7px;
+  border: 1px solid rgba(30,64,175,.9);
+  border-radius: 14px;
+  background: radial-gradient(circle at top left, rgba(30,64,175,.3), rgba(15,23,42,.98));
+  font-size: 11px;
+}
+
+.kpi span { color: var(--muted); }
+
+.kpi strong {
+  display: block;
+  margin-top: 2px;
+  color: #fef9c3;
+  font-size: 16px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1.4fr) minmax(0,1fr);
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.subpanel {
+  min-width: 0;
+  padding: 8px 9px 6px;
+  border: 1px solid rgba(30,64,175,.9);
+  border-radius: 14px;
+  background: rgba(15,23,42,.96);
+  font-size: 11px;
+}
+
+.subpanel h3 {
+  margin-bottom: 4px;
+  color: var(--gold);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.mini-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+
+.mini-table th,
+.mini-table td {
+  padding: 4px 5px;
+  border-bottom: 1px solid rgba(30,64,175,.75);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: end;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.toolbar label { margin: 0; }
+
+.search-field {
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+
+.table-shell {
+  min-height: 0;
+  max-height: 62vh;
+  overflow: auto;
+  border: 1px solid rgba(30,64,175,.9);
+  border-radius: 16px;
+  background: radial-gradient(circle at top left, rgba(30,64,175,.22), rgba(15,23,42,.98));
+}
+
+#resource-table {
+  width: 100%;
+  min-width: 840px;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+#resource-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(15,23,42,.98);
+}
+
+#resource-table th,
+#resource-table td {
+  max-width: 310px;
+  padding: 6px 8px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(30,64,175,.6);
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#resource-table th {
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+#resource-table tbody tr:nth-child(even) td { background: rgba(15,23,42,.88); }
+#resource-table tbody tr:nth-child(odd) td { background: rgba(15,23,42,.96); }
+#resource-table tbody tr:hover td { background: rgba(30,64,175,.6); }
+
+#resource-table a {
+  color: #bfdbfe;
+  text-underline-offset: 2px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 8px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.action-card {
+  padding: 10px;
+  border: 1px solid rgba(30,64,175,.85);
+  border-radius: 16px;
+  background: radial-gradient(circle at top left, rgba(30,64,175,.22), rgba(15,23,42,.98));
+}
+
+.action-card h3 {
+  margin-bottom: 8px;
+  color: var(--gold);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.warning {
+  padding: 6px 8px;
+  border: 1px dashed rgba(148,163,184,.8);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.check-row {
+  grid-template-columns: auto 1fr;
+  align-items: start;
+}
+
+.check-row input {
+  width: auto;
+  margin-top: 3px;
+}
+
+.admin-footer {
+  padding: 8px 18px 10px;
+  border-top: 1px solid rgba(30,41,59,.8);
+  color: #9ca3af;
+  background: rgba(15,23,42,.96);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .22em;
+  font-size: 11px;
+}
+
+[hidden] { display: none !important; }
+
+@media (max-width: 960px) {
+  .admin-header { align-items: flex-start; flex-direction: column; }
+  .admin-session { width: 100%; min-width: 0; }
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .admin-page {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .admin-main { padding: 8px 10px 12px; }
+  .admin-brand { align-items: flex-start; flex-direction: column; }
+  .admin-logo { width: 150px; max-width: 62vw; }
+  .admin-session { grid-template-columns: 1fr; }
+  .panel-heading, .toolbar { align-items: stretch; flex-direction: column; }
+  .button { width: 100%; }
+  .admin-tabs { border-radius: 16px; }
+  .action-grid { grid-template-columns: 1fr; }
+}
+
+@media print {
+  body { background: #fff; color: #000; }
+  .admin-header, .admin-footer, .admin-tabs, .status-strip, .actions-panel { display:none !important; }
+  .admin-page, .panel { box-shadow:none; border:0; margin:0; width:100%; }
+}
+
+</style>
 </head>
 <body>
   <div class="admin-page" id="cic-admin">
     <header class="admin-header">
       <div class="admin-brand">
-        <img src="/assets/CookIntlCasinoLogo.png" alt="Cook International Casino" class="admin-logo">
+        <img src="https://casino.cook-international.com/assets/CookIntlCasinoLogo.png" onerror="this.onerror=null;this.src='./assets/CookIntlCasinoLogo.png';" alt="Cook International Casino" class="admin-logo">
         <div>
           <p class="admin-kicker">Cook International Casino</p>
           <h1>Admin Portal &amp; House Dashboard</h1>
@@ -171,5 +723,55 @@
 
     <footer class="admin-footer">FOR INTERNAL USE ONLY · Cook Services Company, LLC · All administrator activity is logged.</footer>
   </div>
+<script>
+
+window.CIC_CONFIG = Object.freeze({
+  SITE_NAME: "Cook International Casino",
+  SITE_URL: "https://casino.cook-international.com",
+  PORTAL_URL: "https://portal.cook-international.com",
+  API_ENDPOINT: "https://script.google.com/macros/s/AKfycbza0mODAfCHbX9Oa5Bg249wGHwyLM92JQn-Kt8e5lRExKMvy2ivhHi-k99tKJ1PBzUhbw/exec",
+  COMPANY_NAME: "Cook Services Company, LLC",
+  SUPPORT_EMAIL: "cookinternationalcasino@gmail.com",
+  SUPPORT_PHONE_DISPLAY: "(317) 442-1437",
+  LOGO_PATH: "https://casino.cook-international.com/assets/CookIntlCasinoLogo.png"
+});
+
+</script>
+<script>
+(function(){"use strict";
+var root=document.getElementById("cic-admin"),cfg=window.CIC_CONFIG||{};if(!root)return;
+var API=cfg.API_ENDPOINT||"https://script.google.com/macros/s/AKfycbza0mODAfCHbX9Oa5Bg249wGHwyLM92JQn-Kt8e5lRExKMvy2ivhHi-k99tKJ1PBzUhbw/exec",EXPECTED_BACKEND="v10.4.0 Alpha";
+var state={token:sessionStorage.getItem("cic.adminToken")||"",email:sessionStorage.getItem("cic.adminEmail")||"",role:sessionStorage.getItem("cic.adminRole")||"",expiresAt:sessionStorage.getItem("cic.adminExpiresAt")||"",resources:[],current:"dashboard",page:1,pageSize:50,totalPages:0,search:"",sortField:"",sortDirection:"desc",searchTimer:null,expiryTimer:null};
+var el=function(s,p){return(p||root).querySelector(s)},els=function(s,p){return Array.prototype.slice.call((p||root).querySelectorAll(s))};
+function setStatus(message,type){var n=el("#admin-status");n.textContent=message||"";n.classList.toggle("is-error",type==="error");n.classList.toggle("is-success",type==="success")}
+async function api(payload){var response;try{response=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8","Accept":"application/json"},body:JSON.stringify(payload||{}),cache:"no-store"})}catch(e){throw new Error("Network failure. Check the Apps Script deployment and your connection.")}var text=await response.text();var data;try{data=JSON.parse(text)}catch(e){throw new Error("The backend returned an invalid response.")}if(!data.ok){var err=new Error(data.error||"The request failed.");err.data=data;throw err}return data}
+function sessionPayload(mode,action){return{mode:mode,action:action,adminToken:state.token}}
+function saveSession(data){state.token=data.adminToken||"";state.email=data.email||"";state.role=data.role||"";state.expiresAt=data.expiresAt||"";sessionStorage.setItem("cic.adminToken",state.token);sessionStorage.setItem("cic.adminEmail",state.email);sessionStorage.setItem("cic.adminRole",state.role);sessionStorage.setItem("cic.adminExpiresAt",state.expiresAt)}
+function clearSession(){state.token="";state.email="";state.role="";state.expiresAt="";state.resources=[];["cic.adminToken","cic.adminEmail","cic.adminRole","cic.adminExpiresAt"].forEach(function(k){sessionStorage.removeItem(k)});if(state.expiryTimer)clearInterval(state.expiryTimer)}
+function formatValue(value){if(value===null||value===undefined||value==="")return"—";var n=Number(String(value).replace(/[$,]/g,""));if(!isNaN(n)&&/^[-+]?\d[\d,]*(\.\d+)?$/.test(String(value)))return n.toLocaleString();return String(value)}
+function formatDate(value){if(!value)return"—";var d=new Date(value);return isNaN(d.getTime())?String(value):d.toLocaleString()}
+function showLogin(message){clearSession();el("#admin-login-view").hidden=false;el("#admin-app-view").hidden=true;el("#admin-session").hidden=true;if(message)setStatus(message,"error")}
+function showApp(){el("#admin-login-view").hidden=true;el("#admin-app-view").hidden=false;el("#admin-session").hidden=false;el("#admin-session-email").textContent=state.email;el("#admin-session-role").textContent=state.role;startExpiryClock();applyRoleVisibility();renderTabs();activate(state.current||"dashboard")}
+function startExpiryClock(){if(state.expiryTimer)clearInterval(state.expiryTimer);function tick(){var target=new Date(state.expiresAt).getTime(),left=target-Date.now();if(!target||left<=0){showLogin("Admin session has expired. Sign in again.");return}var mins=Math.floor(left/60000),secs=Math.floor(left%60000/1000);el("#admin-session-expiry").textContent=mins+"m "+String(secs).padStart(2,"0")+"s"}tick();state.expiryTimer=setInterval(tick,1000)}
+function roleAllowed(list){return String(list||"").split(",").indexOf(state.role)!==-1}
+function applyRoleVisibility(){els("[data-roles]").forEach(function(node){node.hidden=!roleAllowed(node.getAttribute("data-roles"))})}
+function renderTabs(){var nav=el("#admin-tabs");nav.innerHTML="";var all=[{key:"dashboard",label:"Dashboard"}].concat(state.resources||[]);all.forEach(function(item){var b=document.createElement("button");b.type="button";b.textContent=item.label;b.className=item.key===state.current?"is-active":"";b.addEventListener("click",function(){activate(item.key)});nav.appendChild(b)})}
+function activate(key){state.current=key;state.page=1;state.search="";state.sortField="";el("#resource-search").value="";el("#dashboard-panel").hidden=key!=="dashboard";el("#resource-panel").hidden=key==="dashboard";var rebuild=el("#reports-rebuild");rebuild.hidden=!(key==="reports"&&(state.role==="Owner"||state.role==="Administrator"));renderTabs();if(key==="dashboard")loadDashboard();else loadResource()}
+async function bootstrap(){if(!state.token){showLogin();return}try{var p=sessionPayload("admin_read","bootstrap"),data=await api(p);if(data.backendVersion!==EXPECTED_BACKEND)throw new Error("Backend version mismatch. Expected "+EXPECTED_BACKEND+" but received "+(data.backendVersion||"unknown")+".");state.email=data.email;state.role=data.role;state.expiresAt=data.expiresAt;state.resources=data.resources||[];sessionStorage.setItem("cic.adminEmail",state.email);sessionStorage.setItem("cic.adminRole",state.role);sessionStorage.setItem("cic.adminExpiresAt",state.expiresAt);el("#admin-backend-version").textContent=data.backendVersion||"—";showApp();setStatus("Admin Portal & House Dashboard connected.","success")}catch(e){showLogin(e.message)}}
+async function login(event){event.preventDefault();var f=new FormData(event.currentTarget),msg=el("#admin-login-message");msg.textContent="Signing in…";try{var data=await api({mode:"admin_login",email:String(f.get("email")||"").trim(),password:String(f.get("password")||"")});saveSession(data);el("#admin-backend-version").textContent=data.backendVersion||"—";msg.textContent="";event.currentTarget.reset();await bootstrap()}catch(e){msg.textContent=e.message;setStatus(e.message,"error")}}
+async function logout(){try{if(state.token)await api(sessionPayload("admin_logout",""))}catch(e){}showLogin("You have been signed out.")}
+function kpi(label,value){var d=document.createElement("div");d.className="kpi";var s=document.createElement("span");s.textContent=label;var strong=document.createElement("strong");strong.textContent=formatValue(value);d.appendChild(s);d.appendChild(strong);return d}
+function miniTable(container,headers,rows){container.innerHTML="";if(!rows||!rows.length){container.textContent="No records available.";return}var table=document.createElement("table");table.className="mini-table";var head=document.createElement("thead"),hr=document.createElement("tr");headers.forEach(function(h){var th=document.createElement("th");th.textContent=h.label;hr.appendChild(th)});head.appendChild(hr);table.appendChild(head);var body=document.createElement("tbody");rows.forEach(function(row){var tr=document.createElement("tr");headers.forEach(function(h){var td=document.createElement("td");td.textContent=h.date?formatDate(row[h.key]):formatValue(row[h.key]);tr.appendChild(td)});body.appendChild(tr)});table.appendChild(body);container.appendChild(table)}
+async function loadDashboard(){setStatus("Loading House Dashboard…");try{var p=sessionPayload("admin_read","dashboard"),data=await api(p),dash=data.dashboard||{},metrics=dash.metrics||{},grid=el("#dashboard-kpis");grid.innerHTML="";[["Total Players",metrics["Total Players"]],["Active Players",metrics["Active Players"]],["Restricted Players",metrics["Restricted Players"]],["KYC Pending",metrics["KYC Pending"]],["KYC Verified",metrics["KYC Verified"]],["Gold Coins in Circulation",metrics["Total Gold Coins in Circulation"]],["Gold Coins Purchased Lifetime",metrics["Gold Coins Purchased Lifetime"]],["Complimentary Gold Coins Lifetime",metrics["Complimentary Gold Coins Lifetime"]],["Gold Coins Awarded Lifetime",metrics["Gold Coins Awarded Lifetime"]],["Gold Coins Spent Lifetime",metrics["Gold Coins Spent Lifetime"]],["Administrative Adjustments Lifetime",metrics["Administrative Adjustments Lifetime"]],["Rounds Today",metrics["Rounds Today"]],["Purchases Today",metrics["Purchases Today"]],["Revenue Today USD",metrics["Revenue Today USD"]],["New Players Today",metrics["New Players Today"]],["High-Risk Players",dash.highRiskPlayers]].forEach(function(x){grid.appendChild(kpi(x[0],x[1]))});miniTable(el("#dashboard-vip"),[{label:"VIP Level",key:"level"},{label:"Players",key:"players"}],dash.vipDistribution);miniTable(el("#dashboard-games"),[{label:"Game",key:"game"},{label:"Rounds",key:"rounds"}],dash.mostActiveGames);miniTable(el("#dashboard-kyc"),[{label:"Submitted",key:"submittedAt",date:true},{label:"Player",key:"username"},{label:"Status",key:"status"}],dash.recentKyc);miniTable(el("#dashboard-admin-actions"),[{label:"When",key:"timestamp",date:true},{label:"Admin",key:"adminUser"},{label:"Action",key:"action"}],dash.recentAdminActions);setStatus("House Dashboard updated.","success")}catch(e){handleError(e)}}
+function renderResource(data){el("#resource-title").textContent=data.label||state.current;var head=el("#resource-table thead"),body=el("#resource-table tbody");head.innerHTML="";body.innerHTML="";var tr=document.createElement("tr");(data.headers||[]).forEach(function(h){var th=document.createElement("th");th.textContent=h+(h===data.sortField?(data.sortDirection==="asc"?" ▲":" ▼"):"");th.addEventListener("click",function(){if(state.sortField===h)state.sortDirection=state.sortDirection==="asc"?"desc":"asc";else{state.sortField=h;state.sortDirection="asc"}state.page=1;loadResource()});tr.appendChild(th)});head.appendChild(tr);(data.rows||[]).forEach(function(row){var r=document.createElement("tr");row.forEach(function(value,i){var td=document.createElement("td"),header=data.headers[i];if(header==="Drive File URL"&&/^https:\/\//.test(String(value||""))){var a=document.createElement("a");a.href=value;a.target="_blank";a.rel="noopener noreferrer";a.textContent="Open private file";td.appendChild(a)}else{td.textContent=formatValue(value);td.title=String(value||"")}r.appendChild(td)});body.appendChild(r)});state.totalPages=data.totalPages||0;state.page=data.page||1;el("#resource-page-label").textContent="Page "+state.page+" of "+(state.totalPages||1)+" · "+Number(data.totalRows||0).toLocaleString()+" rows"}
+async function loadResource(){setStatus("Loading "+state.current+"…");try{var p=sessionPayload("admin_read","list_resource");Object.assign(p,{resource:state.current,page:state.page,pageSize:state.pageSize,search:state.search,sortField:state.sortField,sortDirection:state.sortDirection});var data=await api(p);renderResource(data);setStatus((data.label||state.current)+" loaded.","success")}catch(e){handleError(e)}}
+function handleError(e){setStatus(e.message,"error");if(/session|not active/i.test(e.message))showLogin(e.message)}
+async function submitAction(form,payload){setStatus("Saving administrative change…");payload.mode="admin_action";payload.adminToken=state.token;try{var data=await api(payload);setStatus(data.duplicate?"Duplicate event recognized; no second change was applied.":"Administrative change completed.","success");form.reset();if(state.current==="dashboard")loadDashboard();else loadResource();return data}catch(e){handleError(e);throw e}}
+function formPayload(form){var f=new FormData(form),out={};f.forEach(function(v,k){out[k]=v});return out}
+function bindForms(){el("#adjustment-form").addEventListener("submit",function(e){e.preventDefault();var p=formPayload(e.currentTarget);p.amount=Number(p.amount);submitAction(e.currentTarget,p)});el("#flags-form").addEventListener("submit",function(e){e.preventDefault();var p=formPayload(e.currentTarget),clean={action:"save_player_flags",identifier:p.identifier};["kycStatus","riskStatus","vipLevel","accountStatus","selfExcludedUntil","selfExclusionActive","selfExclusionReason","flagNotes"].forEach(function(k){if(p[k]!=="")clean[k]=p[k]});submitAction(e.currentTarget,clean)});el("#kyc-form").addEventListener("submit",function(e){e.preventDefault();var p=formPayload(e.currentTarget);p.action="update_kyc_status";submitAction(e.currentTarget,p)});el("#purchase-form").addEventListener("submit",function(e){e.preventDefault();if(!window.confirm("Record this verified manual administrative purchase and credit the player's Gold Coins?"))return;var p=formPayload(e.currentTarget);p.action="record_purchase";p.amountUsd=Number(p.amountUsd);p.goldCoins=Number(p.goldCoins);p.confirmed=true;submitAction(e.currentTarget,p)});el("#admin-create-form").addEventListener("submit",function(e){e.preventDefault();var p=formPayload(e.currentTarget);if(p.password!==p.passwordConfirm){setStatus("Administrator passwords do not match.","error");return}p.action="admin_create_account";delete p.passwordConfirm;submitAction(e.currentTarget,p)});el("#admin-manage-form").addEventListener("submit",function(e){e.preventDefault();var p=formPayload(e.currentTarget);p.action=p.operation;delete p.operation;if(p.action!=="admin_reset_password")delete p.password;if(p.action!=="admin_set_role")delete p.role;if(p.action!=="admin_set_status")delete p.status;submitAction(e.currentTarget,p)});el("#configuration-form").addEventListener("submit",function(e){e.preventDefault();var p=formPayload(e.currentTarget);p.action="update_configuration";submitAction(e.currentTarget,p)});el("#password-form").addEventListener("submit",async function(e){e.preventDefault();var p=formPayload(e.currentTarget);if(p.newPassword!==p.newPasswordConfirm){setStatus("New passwords do not match.","error");return}p.action="admin_change_own_password";delete p.newPasswordConfirm;try{await submitAction(e.currentTarget,p);showLogin("Password changed. Sign in again.")}catch(err){}})}
+function bindManageVisibility(){var op=el('#admin-manage-form [name="operation"]');function update(){var value=op.value;els(".manage-password").forEach(function(n){n.hidden=value!=="admin_reset_password"});els(".manage-role").forEach(function(n){n.hidden=value!=="admin_set_role"});els(".manage-status").forEach(function(n){n.hidden=value!=="admin_set_status"})}op.addEventListener("change",update);update()}
+el("#admin-login-form").addEventListener("submit",login);el("#admin-logout").addEventListener("click",logout);el("#dashboard-refresh").addEventListener("click",loadDashboard);el("#reports-rebuild").addEventListener("click",async function(){setStatus("Rebuilding report…");try{var p=sessionPayload("admin_action","rebuild_report"),data=await api(p);setStatus("Report rebuilt.","success");loadResource()}catch(e){handleError(e)}});el("#resource-refresh").addEventListener("click",loadResource);el("#resource-prev").addEventListener("click",function(){if(state.page>1){state.page--;loadResource()}});el("#resource-next").addEventListener("click",function(){if(state.page<state.totalPages){state.page++;loadResource()}});el("#resource-page-size").addEventListener("change",function(){state.pageSize=Number(this.value)||50;state.page=1;loadResource()});el("#resource-search").addEventListener("input",function(){clearTimeout(state.searchTimer);state.search=this.value;state.searchTimer=setTimeout(function(){state.page=1;loadResource()},450)});bindForms();bindManageVisibility();if(state.token)bootstrap();else showLogin();
+})();
+</script>
 </body>
 </html>
